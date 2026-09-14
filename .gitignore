@@ -1,0 +1,43 @@
+# ══════════════════════════════════════════════════════════════
+# Sentinel — .gitignore
+# ══════════════════════════════════════════════════════════════
+
+# ── Build output ──────────────────────────────────────────────
+target/
+
+# ── Challenge data (MUST NEVER enter Git) ─────────────────────
+data/
+/data/
+*.parquet
+*.xlsx
+
+# Challenge CSVs in root/data are ignored, but test fixtures under src/ are allowed
+*.csv
+!src/test/resources/**
+
+# ── IDE files ─────────────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+.project
+.classpath
+.settings/
+.factorypath
+.vscode/
+*.code-workspace
+.DS_Store
+Thumbs.db
+
+# ── OS / editor ──────────────────────────────────────────────
+*~
+*.swp
+*.swo
+*.bak
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Environment / secrets ────────────────────────────────────
+.env
+*.env

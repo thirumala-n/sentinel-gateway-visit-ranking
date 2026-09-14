@@ -1,0 +1,50 @@
+### Sentinel — API Examples
+### Base URL: http://localhost:8080
+
+## ══════════════════════════════════════════════════════════════
+## Predictions
+## ══════════════════════════════════════════════════════════════
+
+### Get ranked predictions for a specific week
+GET http://localhost:8080/api/v1/predictions/2025-W03
+Accept: application/json
+
+### Get predictions with query parameters (future: filtering, pagination)
+GET http://localhost:8080/api/v1/predictions/2025-W03?limit=10
+Accept: application/json
+
+## ══════════════════════════════════════════════════════════════
+## Explainability
+## ══════════════════════════════════════════════════════════════
+
+### Explain why a specific gateway was ranked for a given week
+GET http://localhost:8080/api/v1/predictions/2025-W03/GW-12345/explain
+Accept: application/json
+
+## ══════════════════════════════════════════════════════════════
+## Re-run
+## ══════════════════════════════════════════════════════════════
+
+### Re-run ranking for a specific week (recalculates from source data)
+POST http://localhost:8080/api/v1/predictions/2025-W03/rerun
+Accept: application/json
+
+## ══════════════════════════════════════════════════════════════
+## Health & Info
+## ══════════════════════════════════════════════════════════════
+
+### Health check
+GET http://localhost:8080/actuator/health
+Accept: application/json
+
+### Application info
+GET http://localhost:8080/actuator/info
+Accept: application/json
+
+### OpenAPI specification
+GET http://localhost:8080/v3/api-docs
+Accept: application/json
+
+###
+# NOTE: These endpoints are placeholders.
+# They will return errors until implemented in Phase 2+.

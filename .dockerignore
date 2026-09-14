@@ -1,0 +1,39 @@
+# ══════════════════════════════════════════════════════════════
+# Sentinel — .dockerignore
+# ══════════════════════════════════════════════════════════════
+
+# Challenge data
+data/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Build output
+target/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+
+# Documentation (not needed in image)
+docs/
+*.md
+
+# CI
+.github/
+
+# Docker (avoid recursive context)
+docker/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp
+*.log
+*.tmp
+*.bak

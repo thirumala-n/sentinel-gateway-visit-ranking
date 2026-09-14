@@ -1,0 +1,39 @@
+# ═══════════════════════════════════════════════════════════════
+# Sentinel — Gateway Visit Prioritization Service
+# ═══════════════════════════════════════════════════════════════
+
+spring:
+  application:
+    name: sentinel
+
+# ── Server ────────────────────────────────────────────────────
+server:
+  port: ${SENTINEL_PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# ── Sentinel Configuration ────────────────────────────────────
+sentinel:
+  data-dir: ${SENTINEL_DATA_DIR:data}
+  visits-per-week: ${SENTINEL_VISITS_PER_WEEK:15}
+  baseline-window-days: ${SENTINEL_BASELINE_WINDOW_DAYS:28}
+  recent-window-days: ${SENTINEL_RECENT_WINDOW_DAYS:7}
+  scored-weeks: ${SENTINEL_SCORED_WEEKS:4}
+
+# ── Actuator ──────────────────────────────────────────────────
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# ── OpenAPI ───────────────────────────────────────────────────
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

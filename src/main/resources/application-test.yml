@@ -1,0 +1,17 @@
+# ═══════════════════════════════════════════════════════════════
+# Sentinel — Test Profile
+# ═══════════════════════════════════════════════════════════════
+
+spring:
+  application:
+    name: sentinel-test
+
+sentinel:
+  data-dir: ${java.io.tmpdir}/sentinel-test-data
+  visits-per-week: 15
+  baseline-window-days: 28
+  recent-window-days: 7
+  scored-weeks: 4
+
+server:
+  port: 0

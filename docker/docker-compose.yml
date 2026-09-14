@@ -1,0 +1,26 @@
+# ══════════════════════════════════════════════════════════════
+# Sentinel — Docker Compose
+# ══════════════════════════════════════════════════════════════
+
+services:
+  sentinel:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: sentinel
+    ports:
+      - "8080:8080"
+    environment:
+      - SENTINEL_DATA_DIR=/app/data
+      - SENTINEL_VISITS_PER_WEEK=15
+      - SENTINEL_BASELINE_WINDOW_DAYS=28
+      - SENTINEL_RECENT_WINDOW_DAYS=7
+      - SENTINEL_SCORED_WEEKS=4
+    volumes:
+      - ../data:/app/data:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
