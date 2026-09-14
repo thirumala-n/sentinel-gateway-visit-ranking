@@ -2,8 +2,8 @@ package com.lpdg.sentinel.config;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -15,14 +15,16 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @ConfigurationProperties(prefix = "sentinel")
 public record SentinelProperties(
-
         @NotBlank String dataDir,
-
         @Min(1) int visitsPerWeek,
-
         @Min(1) int baselineWindowDays,
-
         @Min(1) int recentWindowDays,
+        @Min(1) int scoredWeeks,
+        @DefaultValue("risk-based") String rankingStrategy) {
 
-        @Min(1) int scoredWeeks) {
+    public SentinelProperties {
+        if (rankingStrategy == null || rankingStrategy.isBlank()) {
+            rankingStrategy = "risk-based";
+        }
+    }
 }

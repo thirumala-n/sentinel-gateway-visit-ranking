@@ -2,38 +2,50 @@
 ### Base URL: http://localhost:8080
 
 ## ══════════════════════════════════════════════════════════════
-## Predictions
+## 1. Predictions
 ## ══════════════════════════════════════════════════════════════
 
-### Get ranked predictions for a specific week
-GET http://localhost:8080/api/v1/predictions/2025-W03
+### Get 15 ranked predictions for week 2026-03-09 (ISO date format)
+GET http://localhost:8080/api/v1/predictions/2026-03-09
 Accept: application/json
 
-### Get predictions with query parameters (future: filtering, pagination)
-GET http://localhost:8080/api/v1/predictions/2025-W03?limit=10
-Accept: application/json
-
-## ══════════════════════════════════════════════════════════════
-## Explainability
-## ══════════════════════════════════════════════════════════════
-
-### Explain why a specific gateway was ranked for a given week
-GET http://localhost:8080/api/v1/predictions/2025-W03/GW-12345/explain
+### Get 15 ranked predictions using ISO-8601 week format (2026-W11)
+GET http://localhost:8080/api/v1/predictions/2026-W11
 Accept: application/json
 
 ## ══════════════════════════════════════════════════════════════
-## Re-run
+## 2. Decision Evidence & Explainability
 ## ══════════════════════════════════════════════════════════════
 
-### Re-run ranking for a specific week (recalculates from source data)
-POST http://localhost:8080/api/v1/predictions/2025-W03/rerun
+### Explain why a specific gateway was ranked where it is (canonical 12-char hex ID)
+GET http://localhost:8080/api/v1/predictions/2026-03-09/02D3289B907C/explain
+Accept: application/json
+
+### Explain using colon-delimited MAC format (automatically normalized)
+GET http://localhost:8080/api/v1/predictions/2026-03-09/02:D3:28:9B:90:7C/explain
 Accept: application/json
 
 ## ══════════════════════════════════════════════════════════════
-## Health & Info
+## 3. Pairwise Comparison
 ## ══════════════════════════════════════════════════════════════
 
-### Health check
+### Compare two gateways to see feature-level reasons why A outranked B
+GET http://localhost:8080/api/v1/predictions/2026-03-09/02D3289B907C/compare/029E65D7B701
+Accept: application/json
+
+## ══════════════════════════════════════════════════════════════
+## 4. Re-run (Explicit Cache Invalidation)
+## ══════════════════════════════════════════════════════════════
+
+### Re-run ranking for week (invalidates cache and recalculates from source data)
+POST http://localhost:8080/api/v1/predictions/2026-03-09/rerun
+Accept: application/json
+
+## ══════════════════════════════════════════════════════════════
+## 5. Health, Readiness & OpenAPI Documentation
+## ══════════════════════════════════════════════════════════════
+
+### Health check (includes telemetry and master data availability)
 GET http://localhost:8080/actuator/health
 Accept: application/json
 
@@ -41,10 +53,9 @@ Accept: application/json
 GET http://localhost:8080/actuator/info
 Accept: application/json
 
-### OpenAPI specification
+### OpenAPI JSON specification
 GET http://localhost:8080/v3/api-docs
 Accept: application/json
 
-###
-# NOTE: These endpoints are placeholders.
-# They will return errors until implemented in Phase 2+.
+### Swagger UI interactive documentation
+# Open in browser: http://localhost:8080/swagger-ui.html
