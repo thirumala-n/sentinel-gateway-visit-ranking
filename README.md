@@ -312,6 +312,14 @@ Sentinel includes a high-density, production-grade decision console served at `/
 - **Pairwise Comparator Panel:** Interactive selector contrasting any two gateways with feature differentials.
 - **Zero Build / Zero Dependencies:** Single static file (`src/main/resources/static/index.html`), 100% offline, zero npm, zero external CDNs.
 
+### Offline Operation
+
+Once the application and its dependencies are available locally, Sentinel's core decision workflow does not require runtime Internet connectivity or external cloud services. Challenge data is processed locally, and the operator console is served directly by the Spring Boot application:
+- **Local Telemetry & Reference Ingestion:** All raw telemetry partitions (`telemetry/month=*/*.parquet`) and metadata files (`gateway_master.csv`, etc.) are read directly from the local `./data` directory with zero network transfers.
+- **Embedded In-Process Analytics:** Analytical feature queries and rolling aggregations execute in-process via embedded DuckDB with zero external database connections or cloud endpoints.
+- **Self-Contained Operator Console:** The web UI is served directly from Spring Boot static resources (`src/main/resources/static/index.html`) with zero runtime external CDN links, web fonts, or remote JavaScript/CSS libraries.
+- **Isolated Decision Loop:** Ranking computation, explanation generation, pairwise comparisons, and on-demand `/rerun` recomputations operate entirely within the local host boundary.
+
 ---
 
 ## Docker Deployment
@@ -412,12 +420,14 @@ sentinel/
 ├── pom.xml                               # Maven build configuration
 ├── mvnw / mvnw.cmd                       # Maven wrappers (Linux / Windows)
 ├── compose.yaml                          # Docker Compose configuration
+├── 23091A05P7.pdf                        # Official Registration ID resume attachment
 ├── predictions.csv                       # NEXORA Part 1 Gate artifact (120 rows)
 ├── README.md                             # Evaluator-first documentation
 ├── DECISIONS.md                          # 25% Judgement Architecture Decision Records
 ├── LIMITATIONS.md                        # Known constraints & out-of-scope items
 ├── AI-USAGE.md                           # AI tool disclosure & oversight record
-├── BACKTESTING.md                        # 11-week historical calibration report
+├── docs/
+│   └── BACKTESTING.md                    # 11-week historical calibration report
 ├── docker/
 │   ├── Dockerfile                        # Multi-stage distroless-style build
 │   └── docker-compose.yml                # Secondary compose spec
@@ -431,5 +441,5 @@ sentinel/
 │   │   └── resources/
 │   │       ├── application.yml           # Externalized configuration properties
 │   │       └── static/index.html         # Single-file Operator Decision Console
-│   └── test/                             # 200 automated tests (Unit, E2E, ArchUnit)
+│   └── test/                             # 212 automated tests (Unit, E2E, ArchUnit)
 ```
