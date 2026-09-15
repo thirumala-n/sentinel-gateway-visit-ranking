@@ -103,6 +103,29 @@ Sentinel is deliberately engineered for **zero infrastructure footprint**, **hig
 
 ---
 
+## Visualizations
+
+Sentinel’s operator decision console (`http://localhost:8080/`) provides decision-focused visual interfaces designed around the field planning workflow:
+
+$$\text{DATA} \longrightarrow \text{SIGNALS} \longrightarrow \text{RISK} \longrightarrow \text{PRIORITY} \longrightarrow \text{FIELD DECISION} \longrightarrow \text{EVIDENCE}$$
+
+Rather than decorative charts or generic dashboard plots, Sentinel uses high-density operational visualizers, semantic risk badges, and comparative diff modals to give technicians and grid dispatchers immediate actionable clarity:
+
+| Visual Interface | Visualization Type | Backing API & Data Source | Operational Purpose |
+| :--- | :--- | :--- | :--- |
+| **Priority #1 Command Card** | Hero visual callout card with severity indicators & signal chips | `GET /api/v1/predictions/{week}` (Rank 1 item) | Delivers instant 5-second visibility into the week's single highest-urgency gateway failure (active outage duration, meter blast radius, reboot clustering). |
+| **Top-15 Work Queue** | Ranked priority table with semantic badges & score indicators | `GET /api/v1/predictions/{week}` | Displays the full 15-gateway weekly dispatch queue with rank badges (1–15), numeric composite scores, risk severity badges (`CRITICAL`, `HIGH`, `MODERATE`, `LOW`), and category tags. |
+| **Evidence Drill-Down** | Modal feature breakdown with severity chips & status cards | `GET /api/v1/predictions/{week}/{id}/explain` | Decomposes individual feature contributions ($F_{01}–F_{06}$), active risk drivers, raw measurements, and operational limitations/warnings for any selected gateway. |
+| **Pairwise Comparator** | Side-by-side contrast modal with delta metrics & proximity alerts | `GET /api/v1/predictions/{week}/{idA}/compare/{idB}` | Visualizes score differentials, ranking divergence, and feature-by-feature reasons justifying why Gateway A is prioritized over Gateway B (including marginal proximity warnings if $\Delta \le 0.02$). |
+| **System & Health Status** | Status badge & interactive competition week selector | `GET /actuator/health` & dynamic calendar anchors | Shows live system operational health (`UP`), telemetry partition availability, and allows rapid switching across all 8 official competition Mondays. |
+| **Dual Control Themes** | Light Enterprise Operations & Dark Control Room modes | Client-side CSS custom properties with persistent state | High-contrast neutral palette (Slate/Zinc) with standardized operational semantic colors (Emerald, Amber, Rose, Cyan) tailored for daylight and control-room monitor walls. |
+
+### Architectural Integrity & Visualization Principles
+- **Backend-Authoritative Rendering:** Every score, rank, risk level, decision category, and feature contribution is computed by the backend ranking engine (`DefaultRankingEngine`). The frontend performs zero independent ranking calculations and contains no mock or hardcoded datasets.
+- **Purpose-Built Decision Interfaces Over Decorative Plots:** The console relies entirely on lightweight semantic HTML5/CSS3 visual components served statically by Spring Boot, eliminating third-party charting libraries (e.g., Chart.js, Recharts, D3) and ensuring 100% offline operational reliability.
+
+---
+
 ## Screen Recording & Resume Placeholders
 
 > **Submission Video Link:**  
