@@ -83,6 +83,26 @@ Sentinel solves the **weekly technician allocation bottleneck** for municipal sm
 
 ---
 
+## Technology Stack
+
+Sentinel is deliberately engineered for **zero infrastructure footprint**, **high-throughput analytics**, and **total determinism**. It eliminates external database and runtime dependencies by combining an embedded columnar OLAP engine with modern Java and Spring Boot.
+
+| Layer | Technologies & Tools | Architectural Purpose |
+| :--- | :--- | :--- |
+| **Backend & Core** | **Java 21**, **Spring Boot 3.5.16**, Spring Web MVC, Jakarta Validation, Jackson, Spring Boot Actuator | Modern LTS Java runtime with typed domain logic, REST API routing, declarative parameter validation, and health instrumentation (`/actuator/health`). |
+| **Data & Analytics** | **DuckDB 1.5.5.1** (embedded in-process), **Apache Parquet**, **Apache Commons CSV 1.14.1**, **Apache POI 5.5.1** | Vectorized SQL queries executed directly over partitioned disk Parquet files without external DBMS; tabular export for `predictions.csv`; Excel ingestion for historical engineer reviews. |
+| **Architecture & Patterns** | **Ports & Adapters (Hexagonal Architecture)**, Strategy Pattern (`RankingStrategy`), Immutable Domain Models (`RankingContext`, `GatewayPrediction`) | Strict layer decoupling enforced by ArchUnit; hot-swappable ranking engines without API layer changes; deterministic tie-breaking comparator. |
+| **Frontend Console** | **HTML5**, **CSS3**, **Vanilla JavaScript** (ES6+), Spring Boot Static Resource Serving | Zero-build operator dashboard (`src/main/resources/static/index.html`) served directly by Spring Boot; 100% offline with **zero Node.js/npm dependencies** and **zero external CDN links**. |
+| **Testing & Quality** | **JUnit 5**, **AssertJ**, **Mockito**, **Spring Boot Test / MockMvc**, **ArchUnit 1.5.0**, **Spotless 3.10.2** | 212 automated tests covering unit features, DuckDB integration, end-to-end REST workflows, regression fixes, and architectural boundary constraints. |
+| **DevOps & Packaging** | **Maven Wrapper (`mvnw`)**, **Docker / Dockerfile**, **Docker Compose (`compose.yaml`)**, **GitHub Actions (`ci.yml`)** | Single-command reproducible build and execution; multi-stage non-root container deployment; automated CI build verification. |
+
+### Deliberate Architectural Simplicity
+- **Embedded Analytics Over External Databases:** DuckDB runs in-process inside the JVM, reading partitioned Apache Parquet telemetry directly from disk with zero external PostgreSQL, MySQL, or Redis processes.
+- **Zero-Build Operator Dashboard:** The frontend console is implemented in pure vanilla HTML/CSS/JavaScript and served directly as a static resource by Spring Boot, eliminating Node.js, npm, webpack/vite pipelines, and CDN failure modes.
+- **Pluggable Ranking Strategy:** All priority calculations are isolated behind the `RankingStrategy` interface, allowing new ranking formulations to be evaluated or substituted without modifying controllers, DTOs, or the web contract.
+
+---
+
 ## Screen Recording & Resume Placeholders
 
 > **Submission Video Link:**  
@@ -314,7 +334,7 @@ Sentinel enforces comprehensive automated test verification:
 ./mvnw spotless:apply
 ```
 
-### Verified Test Suite (200 Tests, 0 Failures, 0 Errors)
+### Verified Test Suite (212 Tests, 0 Failures, 0 Errors)
 - **Unit Tests:** Individual feature computers ($F_{01}–F_{06}$), statistical calculations, score scaling, comparators, parsers.
 - **Integration Tests:** DuckDB parquet reader, CSV exporter, REST API MockMvc controllers.
 - **End-to-End Tests (`PredictionApiE2EIntegrationTest`):** Full-path execution against real DuckDB parquet telemetry.
