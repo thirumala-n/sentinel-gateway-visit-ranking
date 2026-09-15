@@ -87,6 +87,41 @@ The service starts on `http://localhost:8080`.
 
 ---
 
+## Operator Decision Console (Phase 7)
+
+Sentinel features a competition-grade **Operator Decision Console** served directly by Spring Boot at root:
+
+> **Console URL:** [`http://localhost:8080/`](http://localhost:8080/)  
+> **OpenAPI / Swagger:** [`http://localhost:8080/swagger-ui.html`](http://localhost:8080/swagger-ui.html)  
+> **Actuator Health:** [`http://localhost:8080/actuator/health`](http://localhost:8080/actuator/health)
+
+### Evaluator 90-Second Demo Flow
+
+| Time | Action | What the Evaluator Discovers |
+|:-----|:-------|:-----------------------------|
+| **0–15s** | Open `http://localhost:8080/` | **Executive Overview:** 15 weekly recommended visits loaded for `2026-03-09`. Risk breakdown (Critical, High, Actionable), active strategy (`RISK_BASED`), and live health status. |
+| **15–35s** | Inspect Top 15 Ranking Table | **Decision Clarity:** Ranks 1 to 15 displayed with composite scores, proportional score bars, risk level badges, decision categories, data confidence, and primary operational reasons. |
+| **35–55s** | Click "Inspect" or row | **Evidence Traceability Modal:** Full breakdown of F01–F08 feature metrics, normalized Z-scores, active distress factors, operational warnings, and limitations. |
+| **55–75s** | Review "Why #1 Above #2?" | **Pairwise Contrast Engine:** Side-by-side comparison of Gateway A vs B showing exact feature contrast bullets and proximity tie-breaking warnings. |
+| **75–90s** | Click "Rerun" or "Export CSV" | **Operational Control:** Cache invalidation via `POST /rerun` with in-flight spinner, and instant RFC-4180 CSV export. |
+
+### Operator Workflow Pipeline
+
+```
+1. SELECT WEEK       ──> Pick canonical Monday (e.g. 2026-03-09)
+2. LOAD DECISION     ──> REST API queries in-process DuckDB telemetry
+3. REVIEW TOP 15     ──> Inspect composite risk scores & risk levels
+4. DRILL EVIDENCE    ──> Open modal for F01–F08 feature normalization
+5. PAIRWISE CONTRAST ──> Examine why Gateway A outranks Gateway B
+6. RECALCULATE/EXPORT──> Trigger live rerun or download RFC-4180 CSV
+```
+
+### Architecture: Single Source of Truth
+- **Zero Frontend Duplication:** The web console contains **zero** scoring formulas, risk calculations, or threshold definitions. It is a pure vanilla HTML5/CSS/JavaScript consumer of the REST API (`fetch()`).
+- **Zero External Dependencies:** Built with native system fonts and vanilla JavaScript. No Node.js, npm, Webpack, Vite, React, or external CDNs required. Works 100% offline.
+
+---
+
 ## REST API Endpoints & Examples
 
 Base URL: `http://localhost:8080/api/v1`
@@ -208,7 +243,7 @@ Both strategies satisfy the identical API contract (exactly 15 decisions, unique
 ## Testing & Quality Assurance
 
 ```bash
-# Run full automated test suite (196 tests)
+# Run full automated test suite (198 tests)
 ./mvnw clean test
 
 # Verify code formatting (Google Java Format)

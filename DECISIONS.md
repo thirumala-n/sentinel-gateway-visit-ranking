@@ -105,3 +105,21 @@ This document records key technical decisions made during development.
 4. **Live-Demo Strategy Substitution:** `RankingStrategy` is bound via Spring configuration (`sentinel.ranking-strategy`). Setting `sentinel.ranking-strategy=baseline` swaps `RiskBasedRankingStrategy` for `BaselineRankingStrategy` with zero application service or controller changes.
 5. **Strict Temporal & Format Validation:** `PredictionWeekParser` supports both ISO date (`YYYY-MM-DD`) and ISO week (`YYYY-Www`) formats, enforcing Monday alignment, rejecting future weeks beyond telemetry (>2026-03-30) with 422 `FUTURE_WEEK`, and rejecting pre-baseline weeks (<2025-09-01) with 422 `UNSUPPORTED_WEEK`.
 
+## ADR-015: Operator Decision Console as Single-File Static Consumer
+
+**Status:** Accepted
+
+**Context:** Phase 7 requires an intuitive, competition-grade operator decision interface to inspect weekly visit priorities, drill into decision evidence, contrast pairwise rankings, trigger cache recalculation, and export decisions. Evaluators must be able to comprehend the system's reasoning within seconds without managing separate frontend build pipelines, Node.js runtimes, or external network dependencies.
+
+**Decision:**
+1. **Single-File Vanilla Web Architecture:** The dashboard is implemented as a single, self-contained HTML/CSS/JavaScript file (`src/main/resources/static/index.html`) served directly by Spring Boot at `http://localhost:8080/`.
+2. **Zero External Runtime Dependencies:** No external JS frameworks (React, Vue, Angular), no build toolchains (Vite, Webpack, npm), no CDN fonts, and no external analytics. Uses the native system font stack (`-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`) to ensure 100% offline functionality.
+3. **Backend as Single Source of Truth:** The console is strictly a read-only consumer of the REST API (`fetch()`). The frontend never calculates risk scores, feature values, or ranking thresholds; all displayed evidence and metrics originate directly from `/api/v1/predictions/{week}`, `/explain`, `/compare`, and `/actuator/health`.
+4. **Live-Session Resilience:** Provides visual feedback for system health, in-flight recalculations (spinner on rerun), non-blocking error alerts with actionable codes, and client-side RFC-4180 CSV export of currently loaded weekly predictions.
+
+**Consequences:**
+- Zero deployment overhead: starting the Spring Boot JAR automatically serves the decision console.
+- Zero drift risk between dashboard numbers and backend ranking logic.
+- Evaluators can review the full decision lifecycle in under 90 seconds.
+
+
