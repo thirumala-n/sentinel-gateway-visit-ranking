@@ -1,285 +1,392 @@
-# Sentinel — Gateway Visit Prioritization Service
+# SENTINEL — Gateway Reliability & Field Planning
 
-> **NEXORA 2026 Challenge** · Internal project name: *Sentinel*
-
-Sentinel ranks gateway visits to help field engineers prioritise which gateways to inspect each week, based on telemetry anomalies, visit history, and operational context.
-
----
-
-## Problem
-
-Field engineers have a limited budget of 15 weekly visits. Sentinel analyses historical telemetry and meter data across a 28-day baseline window to produce an evidence-backed, deterministic ranking of the 15 highest-value gateway visits each week, accompanied by structured decision evidence for operators.
-
-## Competition Track
-
-NEXORA 2026 — Gateway Visit Ranking Service (Software Development Track).
+> **NEXORA 2026 Innovation Challenge** · Selected Track: **Software Development (60%)**  
+> *Deterministic, cost-sensitive weekly field visit decision system for smart utility grids.*
 
 ---
 
-## Architecture
+## Quick Start (Run in Under 60 Seconds)
 
-Sentinel follows a **hexagonal (ports & adapters) architecture**:
+Sentinel requires **zero infrastructure setup**, **zero API keys**, **zero cloud dependencies**, and **zero external databases**. It runs 100% offline using in-process DuckDB OLAP.
 
-```
-┌─────────────────────────────────────────────┐
-│                  web                        │
-│  controllers · DTOs · exception handling    │
-└──────────────────┬──────────────────────────┘
-                   │
-┌──────────────────▼──────────────────────────┐
-│              application                    │
-│  prediction service · caching · csv export  │
-│  explanation service · comparison engine    │
-└──────────────────┬──────────────────────────┘
-                   │
-┌──────────────────▼──────────────────────────┐
-│                domain                       │
-│  models · ranking strategies · features     │
-│  (framework-independent, 0 Spring/IO deps)  │
-└─────────────────────────────────────────────┘
-                   ▲
-┌──────────────────┴──────────────────────────┐
-│            infrastructure                   │
-│  DuckDB · CSV · Excel · configuration       │
-│  (implements application output ports)      │
-└─────────────────────────────────────────────┘
+### 1. External Data Contract (Official Challenge Data)
+Per official NEXORA competition rules:
+- The official challenge dataset **MUST NOT be committed** or shared in the repository (verified via `git ls-files data/` returning 0 files).
+- The evaluator clones the repository and places the official challenge data into the top-level `./data` directory:
+  ```
+  data/
+  ├── gateway_master.csv
+  ├── meter_read_success.csv
+  ├── field_visits.csv
+  ├── engineer_review_2026-02.xlsx
+  └── telemetry/
+      ├── month=2025-08/*.parquet
+      └── ...
+  ```
+- **If `./data` is missing:** The application fails fast with a clear, actionable startup or invocation exception (`NoSuchFileException` / `IllegalStateException`) stating that `./data` does not exist. It never silently falls back to hardcoded machine paths.
+
+### 2. Start the Application (One Command)
+
+**Windows (PowerShell / Command Prompt):**
+```powershell
+.\mvnw.cmd spring-boot:run
 ```
 
-**Key design rule:** `domain` has zero dependencies on Spring, databases, or I/O libraries (enforced via ArchUnit tests).
-
----
-
-## Technology Stack
-
-| Layer         | Technology                                  |
-|---------------|---------------------------------------------|
-| Language      | Java 21 (LTS)                               |
-| Framework     | Spring Boot 3.5.x                           |
-| Build         | Maven (`./mvnw`)                            |
-| Analytics     | DuckDB (in-process analytical SQL engine)   |
-| Serialization | Apache Commons CSV (RFC-4180), Jackson      |
-| Excel         | Apache POI OOXML                            |
-| API Docs      | springdoc-openapi (Swagger UI, OpenAPI 3.0) |
-| Testing       | JUnit 5, Mockito, AssertJ, ArchUnit         |
-| Code Style    | Spotless (Google Java Format)               |
-| Observability | Spring Boot Actuator (`/actuator/health`)   |
-
----
-
-## Quick Start: Run the API
-
-### Prerequisites
-- Java 21+
-- Available competition dataset in `./data` (`data/telemetry`, `data/gateway_master.csv`, etc.)
-
-### 1. Start the Application
-
+**Linux / macOS:**
 ```bash
-# Using Maven wrapper
 ./mvnw spring-boot:run
+```
 
-# Or package and run the JAR
+*Or build and run the packaged JAR directly:*
+```bash
 ./mvnw clean package -DskipTests
 java -jar target/sentinel-0.0.1-SNAPSHOT.jar
 ```
 
-The service starts on `http://localhost:8080`.
+### 3. Verify System Health & Call the API
+```bash
+# Health & Readiness Check
+curl http://localhost:8080/actuator/health
+
+# Retrieve this week's 15 prioritized visits (ISO date format)
+curl http://localhost:8080/api/v1/predictions/2026-03-09
+
+# Explain why a specific gateway was ranked where it is
+curl http://localhost:8080/api/v1/predictions/2026-03-09/02D3289B907C/explain
+
+# Pairwise comparison: why was Gateway A ranked ahead of Gateway B?
+curl http://localhost:8080/api/v1/predictions/2026-03-09/02D3289B907C/compare/029E65D7B701
+
+# Re-run ranking from source data without restarting the application
+curl -X POST http://localhost:8080/api/v1/predictions/2026-03-09/rerun
+```
+
+### 4. Open the Operator Decision Console
+Open your browser to:
+```
+http://localhost:8080/
+```
+The console is a self-contained, 100% offline enterprise interface served directly by Spring Boot (no Node.js, no npm, zero CDN dependencies).
 
 ---
 
-## Operator Decision Console (Phase 7)
+## What It Does
 
-Sentinel features a competition-grade **Operator Decision Console** served directly by Spring Boot at root:
-
-> **Console URL:** [`http://localhost:8080/`](http://localhost:8080/)  
-> **OpenAPI / Swagger:** [`http://localhost:8080/swagger-ui.html`](http://localhost:8080/swagger-ui.html)  
-> **Actuator Health:** [`http://localhost:8080/actuator/health`](http://localhost:8080/actuator/health)
-
-### Evaluator 90-Second Demo Flow
-
-| Time | Action | What the Evaluator Discovers |
-|:-----|:-------|:-----------------------------|
-| **0–15s** | Open `http://localhost:8080/` | **Executive Overview:** 15 weekly recommended visits loaded for `2026-03-09`. Risk breakdown (Critical, High, Actionable), active strategy (`RISK_BASED`), and live health status. |
-| **15–35s** | Inspect Top 15 Ranking Table | **Decision Clarity:** Ranks 1 to 15 displayed with composite scores, proportional score bars, risk level badges, decision categories, data confidence, and primary operational reasons. |
-| **35–55s** | Click "Inspect" or row | **Evidence Traceability Modal:** Full breakdown of F01–F08 feature metrics, normalized Z-scores, active distress factors, operational warnings, and limitations. |
-| **55–75s** | Review "Why #1 Above #2?" | **Pairwise Contrast Engine:** Side-by-side comparison of Gateway A vs B showing exact feature contrast bullets and proximity tie-breaking warnings. |
-| **75–90s** | Click "Rerun" or "Export CSV" | **Operational Control:** Cache invalidation via `POST /rerun` with in-flight spinner, and instant RFC-4180 CSV export. |
-
-### Operator Workflow Pipeline
-
-```
-1. SELECT WEEK       ──> Pick canonical Monday (e.g. 2026-03-09)
-2. LOAD DECISION     ──> REST API queries in-process DuckDB telemetry
-3. REVIEW TOP 15     ──> Inspect composite risk scores & risk levels
-4. DRILL EVIDENCE    ──> Open modal for F01–F08 feature normalization
-5. PAIRWISE CONTRAST ──> Examine why Gateway A outranks Gateway B
-6. RECALCULATE/EXPORT──> Trigger live rerun or download RFC-4180 CSV
-```
-
-### Architecture: Single Source of Truth
-- **Zero Frontend Duplication:** The web console contains **zero** scoring formulas, risk calculations, or threshold definitions. It is a pure vanilla HTML5/CSS/JavaScript consumer of the REST API (`fetch()`).
-- **Zero External Dependencies:** Built with native system fonts and vanilla JavaScript. No Node.js, npm, Webpack, Vite, React, or external CDNs required. Works 100% offline.
+Sentinel solves the **weekly technician allocation bottleneck** for municipal smart grids:
+1. **Analyses 28 Days of Historical Telemetry**: Evaluates rolling baseline statistics, outage persistence, reboot clustering, and outage trajectory across the entire gateway fleet.
+2. **Selects Exactly 15 Gateways Each Week**: Emits a deterministic, priority-ordered list of the 15 gateways where a physical visit resolves active hardware faults and mitigates the highest customer risk.
+3. **Explains Every Decision**: Provides transparent, feature-traceable rationales linking each rank to observable measurements (e.g. `168h continuous outage. 200 meters affected`).
+4. **Produces `predictions.csv`**: Generates the official competition submission artifact with exactly 120 rows (15 gateways × 8 required weeks), ranks 1–15, numeric scores, reasons $\le 300$ characters, and the canonical header `week_start,rank,gateway_id,score,reason`.
+   - **Official Scored Weeks (8 Weeks):**
+     `2026-02-02`, `2026-02-09`, `2026-02-16`, `2026-02-23`, `2026-03-02`, `2026-03-09`, `2026-03-16`, `2026-03-23`.
+5. **Adapts to New Data Live (Round Two)**: Ingests newly dropped telemetry partitions on `POST /rerun` without requiring an application restart.
 
 ---
 
-## REST API Endpoints & Examples
+## Screen Recording & Resume Placeholders
+
+> **Submission Video Link:**  
+> `[RECORDING PLACEHOLDER: https://youtu.be/EXAMPLE_NEXORA_SENTINEL_2026]`  
+> *(Manual submission action: Record a 6–8 minute screencast demonstrating clean startup, API execution, dynamic partition rerun without restart, explainability, and the operator decision console).*
+>
+> **Resume Attachment:**  
+> Place your `<Registration_Id>.pdf` at the repository root before submitting.
+
+---
+
+## NEXORA Problem & Economics
+
+In municipal utility operations (LPDG × RGM), field technicians are a scarce, high-cost resource capped at **15 site visits per week**.
+
+### Economic Parameters
+- **Unnecessary Visit Cost:** **€380** per wasted truck roll (dispatched to a gateway where `Kein Fehler gefunden` is determined).
+- **Unvisited Broken Gateway Penalty:** **€600 per week** left unvisited.
+- **Important:** The official €600 penalty applies uniformly per faulty gateway and is **NOT multiplied by installed meter count**.
+
+### Economic Formulation vs. Prioritization Model
+We strictly distinguish between the two:
+1. **Official Competition Scoring:** Evaluated as:
+   $$\text{Scoring Cost} = (\text{Dispatched Visits} \times €380) + (\text{Unattended Faulty Gateways} \times €600)$$
+   The official €600 penalty applies per faulty gateway regardless of meter count.
+2. **Sentinel's Internal Prioritization:** Technical failure risk ($R_{\text{tech}}$) is scaled by installed meter count ($M_{\text{impact}}$) strictly for **rank ordering** among degraded gateways. A dead gateway serving 800 meters disrupts 5× more customer billing than one serving 40 meters. Meter count breaks ties and elevates high-blast-radius sites, but **never** pushes a healthy gateway into the top 15.
+
+---
+
+## Key Decisions & Why This Approach
+
+| Decision | Chosen Approach | Rejected Alternative | Core Rationale |
+| :--- | :--- | :--- | :--- |
+| **Problem Definition** | Detect active, severe, persistent faults | Predictive failure forecasting | 60.7% of historical visits resulted in no defect found (high operational uncertainty); resolving deterministic, active outages yields immediate, provable operational value. |
+| **Ranking Model** | Staged additive core + log impact multiplier | Unweighted 3-sigma flag counting | Reference baseline is blind to persistence (treats 15 1-min blips same as 15h dead) and ignores customer blast radius. |
+| **Collinear Signals** | Use only `offline_duration_sec` | Include `disconnection_cnt` | `disconnection_cnt` and offline duration have $r=0.94$; counting both triple-counts socket reconnect flap. |
+| **Algorithm Class** | Fixed engineering weights evaluated via backtesting | Supervised ML (XGBoost) | Only 642 historical visit labels exist with high bias; ML models risk severe drift on unseen telemetry partitions. |
+| **Auxiliary Data** | Validation evidence only | Runtime scoring features | `meter_read_success.csv` ends on 2026-01-26 (5-week lag); `engineer_review` was created on 2026-02-14 (cannot leak backward). |
+| **Live Rerun** | Dynamic glob scan on `/rerun` | Service restart on new data | Round Two drops new telemetry into `data/`; DuckDB re-evaluates filesystem globs dynamically with zero downtime. |
+| **Part 2 Track** | Software Development (60%) | Data Science / Business Analytics | Real utility operations require dependable, tested, resilient services with clean contracts and live change readiness. |
+
+*(Full rationale, alternatives, evidence, and falsification conditions are documented in [DECISIONS.md](DECISIONS.md)).*
+
+---
+
+## Architecture & Hexagonal Purity
+
+Sentinel adheres to a strict **Hexagonal (Ports & Adapters) Architecture**, verified at build time by ArchUnit (`ArchitectureTest.java`):
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                            WEB LAYER                             │
+│   PredictionController · DTOs · RFC-7807 GlobalExceptionHandler  │
+└─────────────────────────────────┬────────────────────────────────┘
+                                  │
+┌─────────────────────────────────▼────────────────────────────────┐
+│                        APPLICATION LAYER                         │
+│   GatewayPredictionApplicationService · FeatureExtractionService │
+│   DecisionExplanationService · PredictionsCsvExporter            │
+│   In-Memory ConcurrentHashMap Cache (evicted on /rerun)          │
+└─────────────────────────────────┬────────────────────────────────┘
+                                  │
+┌─────────────────────────────────▼────────────────────────────────┐
+│                          DOMAIN LAYER                            │
+│   Models: Gateway, GatewayId, PredictionWeek, BaselineStats      │
+│   Ranking: RankingStrategy, RiskBasedRankingStrategy             │
+│   Features: GatewayFeatures, FeatureComputer                     │
+│   (Zero framework dependencies · Zero Spring or DB imports)      │
+└─────────────────────────────────▲────────────────────────────────┘
+                                  │
+┌─────────────────────────────────┴────────────────────────────────┐
+│                      INFRASTRUCTURE LAYER                        │
+│   DuckDbTelemetryRepository · DuckDbGatewayRepository            │
+│   CsvMeterReadRepository · DuckDbConfiguration                   │
+│   (Implements Application Output Ports via In-Process DuckDB)    │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Ranking Method
+
+The ranking engine evaluates candidates for target Monday $T_{\text{target}}$:
+
+### 1. Technical Failure Intensity ($R_{\text{tech}}$)
+$$R_{\text{tech}} = \left( 0.45 \cdot \tilde{F}_{01} + 0.35 \cdot \tilde{F}_{03} + 0.20 \cdot \tilde{F}_{02} \right) \times T_{\text{trend}}$$
+
+- $\tilde{F}_{01} = \min(1.0, F_{01} / 84.0)$: Flagged Offline Hours normalized against a 3.5-day ceiling.
+- $\tilde{F}_{03} = \min(1.0, F_{03} / 48.0)$: Max Consecutive Offline Run normalized against a 48-hour continuous outage. Complete outages had a **65.0% repair rate** in field history.
+- $\tilde{F}_{02} = \min(1.0, F_{02} / 24.0)$: Flagged Reboot Hours normalized against 24 hours. Reboot clustering had a **56.4% repair rate** (power supply and antenna replacements).
+- $T_{\text{trend}}$: Outage trajectory factor from $F_{04}$:
+  - $1.2$ if accelerating ($F_{04} > 1.2$)
+  - $0.8$ if self-healing / recovering ($F_{04} < 0.5$)
+  - $1.0$ otherwise
+
+### 2. Guarded Business Impact Scaling ($M_{\text{impact}}$)
+$$\text{If } R_{\text{tech}} < 0.05: \quad \text{Score} = R_{\text{tech}} \quad (\text{fallback candidate, zero multiplier applied})$$
+$$\text{If } R_{\text{tech}} \ge 0.05: \quad M_{\text{impact}} = \frac{\log_{10}(\max(10, F_{05}))}{\log_{10}(156)}$$
+$$\text{Score} = R_{\text{tech}} \times M_{\text{impact}} \times 100.0$$
+
+### 3. Strict 5-Tier Deterministic Tie-Breaking
+1. `score` descending ($\epsilon = 10^{-6}$)
+2. `f03MaxConsecutiveOfflineHours` descending
+3. `f01FlaggedOfflineHours` descending
+4. `f05MetersExposure` descending
+5. `gatewayId` ascending (12-character canonical hex string)
+
+---
+
+## Explainability & Pairwise Comparison
+
+Sentinel provides deterministic, feature-traceable explanations with **zero LLM hallucinations**:
+
+- **Per-Gateway Explanation (`GET .../explain`):**
+  - High-level operational summary.
+  - Assigned risk level (`CRITICAL`, `HIGH`, `MODERATE`, `LOW`, `NONE`).
+  - Decision category (`MISSING_TELEMETRY`, `ACTIONABLE_RISK`, `HIGH_PRIORITY`, `LOW_CONFIDENCE`, `FALLBACK`).
+  - Individual feature contributions with human-readable severity tags (`F01` 42h `CRITICAL`, `F03` 48h `CRITICAL`).
+  - RFC-4180 reason string ($\le 300$ chars) matching `predictions.csv`.
+- **Pairwise Contrast (`GET .../compare/{otherId}`):**
+  - Identifies score differential ($\Delta \text{score}$).
+  - Explains the dominant feature why Gateway A outranked Gateway B.
+  - Generates a **Proximity Warning** if $|\Delta \text{score}| < 5.0$, alerting dispatchers to marginal differences.
+
+---
+
+## Data Handling & Zero-Restart Rerun
+
+- **Data Engine:** DuckDB in-process OLAP engine over Hive-partitioned Parquet (`data/telemetry/*/*.parquet`).
+- **Dynamic Globbing:** DuckDB evaluates file system globs at query execution time.
+- **Rerun Semantics (`POST /rerun`):** Evicts the in-memory cache entry for the specified week and executes a clean query scan over disk. When new telemetry partitions are dropped into `data/telemetry/` during a live session, calling `/rerun` immediately ingests the new data **without restarting Spring Boot**.
+- **Regression Proved:** Covered by `RerunDynamicDataIntegrationTest.java`.
+
+---
+
+## Temporal Safety & Anti-Leakage Protocol
+
+1. **Strict Window Boundaries:**
+   - Baseline Window: $[T_{\text{target}} - 28\text{d}, T_{\text{target}})$
+   - Scoring Window: $[T_{\text{target}} - 7\text{d}, T_{\text{target}})$
+   - Exclusive upper bound: `ts_utc < ?` strictly excludes all observations on or after $T_{\text{target}}$.
+2. **Auxiliary Data Isolation:**
+   - `meter_read_success.csv` ends on 2026-01-26; used only for descriptive feature $F_{07}$, never for scoring.
+   - `field_visits.csv` (ended 2026-02-14) and `engineer_review_2026-02.xlsx` (audited 2026-02-14) are strictly post-hoc evaluation references with zero runtime pipeline dependencies.
+3. **Automated Verification:** Verified by `TemporalLeakageTest.java`.
+
+---
+
+## REST API Reference
 
 Base URL: `http://localhost:8080/api/v1`
 
-### 1. Get Weekly Predictions (15 Ranked Decisions)
-```bash
-# ISO Date format
-curl -s http://localhost:8080/api/v1/predictions/2026-03-09
+### Endpoints
 
-# ISO Week format
-curl -s http://localhost:8080/api/v1/predictions/2026-W11
-```
-**Example Response:**
-```json
-{
-  "week_start": "2026-03-09",
-  "total_selected": 15,
-  "capacity": 15,
-  "ranking_method": "RISK_BASED",
-  "generated_at": "2026-09-15T02:32:54.616Z",
-  "predictions": [
-    {
-      "rank": 1,
-      "gateway_id": "02D3289B907C",
-      "score": 84.12,
-      "reason": "168h continuous outage; 168 offline anomalies; recent outage is accelerating. 156 meters affected.",
-      "decision_category": "MISSING_TELEMETRY",
-      "risk_level": "CRITICAL",
-      "confidence": "MISSING_TELEMETRY",
-      "fallback": false
-    }
-  ]
-}
-```
+| Method | Path | Description | Status Codes |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/predictions/{week}` | Top 15 ranked visits for target week | `200`, `400`, `422` |
+| `GET` | `/predictions/{week}/{gatewayId}/explain` | Structural decision explanation | `200`, `400`, `404`, `422` |
+| `GET` | `/predictions/{week}/{idA}/compare/{idB}` | Pairwise ranking contrast | `200`, `400`, `404`, `422` |
+| `POST`| `/predictions/{week}/rerun` | Invalidate cache & recompute from source data | `200`, `400`, `422` |
+| `GET` | `/actuator/health` | Service liveness & data availability indicator | `200`, `503` |
 
-### 2. Explain a Gateway Ranking
-Answers: *"Why is this gateway ranked where it is?"*
-```bash
-curl -s http://localhost:8080/api/v1/predictions/2026-03-09/02D3289B907C/explain
-```
-**Example Response:**
-```json
-{
-  "gateway_id": "02D3289B907C",
-  "rank": 1,
-  "score": 84.12,
-  "decision_category": "MISSING_TELEMETRY",
-  "risk_level": "CRITICAL",
-  "confidence": "MISSING_TELEMETRY",
-  "fallback": false,
-  "primary_reason": "168h continuous outage; 168 offline anomalies; recent outage is accelerating. 156 meters affected.",
-  "summary": "Primary driver is sustained complete offline failure. Zero telemetry received across entire scoring week.",
-  "feature_contributions": [
-    {
-      "feature_code": "F01",
-      "feature_name": "Flagged Offline Hours",
-      "value": "168h",
-      "severity": "CRITICAL",
-      "active": true
-    }
-  ],
-  "warnings": ["No telemetry received in scoring week; communications failure cannot be excluded."],
-  "limitations": ["Subject to baseline drift if outage spans > 28 days."]
-}
-```
+### Supported Week Formats
+- ISO Date: `2026-03-09` (must be a Monday)
+- ISO Week: `2026-W11`
 
-### 3. Pairwise Comparison Report
-Answers: *"Why is Gateway A ranked above Gateway B?"*
-```bash
-curl -s http://localhost:8080/api/v1/predictions/2026-03-09/02D3289B907C/compare/029E65D7B701
-```
-**Example Response:**
-```json
-{
-  "higher_gateway_id": "02D3289B907C",
-  "lower_gateway_id": "029E65D7B701",
-  "reasons": [
-    "Gateway 02D3289B907C is categorized MISSING_TELEMETRY vs Gateway 029E65D7B701 categorized ACTIONABLE_RISK.",
-    "Gateway 02D3289B907C has a 168h continuous outage vs Gateway 029E65D7B701's 14h (F03: 168 > 14).",
-    "Score: 02D3289B907C=84.12 vs 029E65D7B701=65.40."
-  ],
-  "score_proximity_warning": false
-}
-```
-
-### 4. Rerun Predictions (Explicit Cache Invalidation)
-Forces re-reading source data from disk and recalculating the ranking:
-```bash
-curl -X POST -s http://localhost:8080/api/v1/predictions/2026-03-09/rerun
-```
-
-### 5. Health & Swagger Documentation
-- **Health Check**: `http://localhost:8080/actuator/health`
-- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
-- **OpenAPI JSON Spec**: `http://localhost:8080/v3/api-docs`
+### Deliberate Error Handling (RFC-7807)
+- `400 MALFORMED_WEEK`: Date cannot be parsed.
+- `400 INVALID_WEEK_DAY`: Date is not a Monday.
+- `400 MALFORMED_GATEWAY_ID`: Not a valid 12-hex or 17-colon MAC.
+- `400 INVALID_COMPARISON`: Comparing a gateway to itself.
+- `404 GATEWAY_NOT_FOUND`: Gateway is not in the top 15 recommendations.
+- `422 UNSUPPORTED_WEEK`: Week is before `2025-09-01` (insufficient 28d baseline).
+- `422 FUTURE_WEEK`: Week is beyond telemetry coverage (`> 2026-03-30`).
 
 ---
 
-## Live-Demo Strategy Switching
+## Operator Decision Console
 
-The ranking strategy can be swapped on the fly via Spring configuration without code changes:
-
-```bash
-# Run with Risk-Based Strategy (Default)
-java -jar target/sentinel-0.0.1-SNAPSHOT.jar
-
-# Run with Baseline 3-Sigma Anomaly Strategy
-java -Dsentinel.ranking-strategy=baseline -jar target/sentinel-0.0.1-SNAPSHOT.jar
-
-# Or via environment variable
-export SENTINEL_RANKING_STRATEGY=baseline
-./mvnw spring-boot:run
-```
-
-Both strategies satisfy the identical API contract (exactly 15 decisions, unique gateways, continuous ranks 1..15).
+Sentinel includes a high-density, production-grade decision console served at `/`:
+- **Light / Dark Enterprise Themes:** High-contrast neutral palette (Slate/Zinc) with operational semantic colors (Emerald, Amber, Rose, Cyan).
+- **Priority #1 Command Card:** Immediate 5-second clarity on the single most urgent dispatch candidate.
+- **Full Work Queue:** 15-gateway table with severity badges, metrics, and instant modal drill-down.
+- **Pairwise Comparator Panel:** Interactive selector contrasting any two gateways with feature differentials.
+- **Zero Build / Zero Dependencies:** Single static file (`src/main/resources/static/index.html`), 100% offline, zero npm, zero external CDNs.
 
 ---
 
-## Testing & Quality Assurance
+## Docker Deployment
+
+> **Deployment Status:** Static Docker configuration inspection completed; runtime execution not tested because Docker Engine was unavailable.
+
+Native execution (`./mvnw spring-boot:run` or `.\mvnw.cmd spring-boot:run`) is the verified primary run path. Docker Compose is provided as optional, supporting containerized infrastructure:
 
 ```bash
-# Run full automated test suite (198 tests)
+# Build and start container
+docker compose up --build
+
+# Run in background
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Stop container
+docker compose down
+```
+
+### Container Safeguards
+- Non-root user `sentinel` (UID 10001).
+- Host data mounted **read-only** (`./data:/app/data:ro`).
+- Built-in `HEALTHCHECK` probing `/actuator/health`.
+- `.dockerignore` prevents host challenge data from leaking into the container image.
+
+---
+
+## Testing & Quality Gates
+
+Sentinel enforces comprehensive automated test verification:
+
+```bash
+# Run all unit, integration, and architecture tests
 ./mvnw clean test
 
-# Verify code formatting (Google Java Format)
+# Check Spotless formatting
 ./mvnw spotless:check
 
-# Auto-apply code formatting
+# Apply Spotless auto-formatting
 ./mvnw spotless:apply
 ```
 
-### Key Test Suites:
-- **`PredictionApiE2EIntegrationTest`**: Full-stack HTTP $\to$ DuckDB $\to$ Parquet $\to$ Ranking $\to$ Explanation $\to$ JSON test.
-- **`PredictionControllerWebMvcTest`**: MockMvc test covering all endpoints and structured error codes (400, 404, 422).
-- **`PredictionsCsvConsistencyTest`**: Proves bitwise agreement between API predictions and generated `predictions.csv`.
-- **`PredictionRerunDeterminismTest`**: Verifies cache eviction, recomputation, and deterministic repeatability.
-- **`RankingStrategySubstitutionTest`**: Proves seamless strategy swapping.
-- **`DuckDbTelemetryRepositoryRegressionTest`**: Preserved bug-driven regression test for Hive partition globbing and timestamp bindings.
-- **`ArchitectureTest`**: ArchUnit tests guaranteeing domain isolation (zero Spring/Web/Infrastructure dependencies in domain).
+### Verified Test Suite (200 Tests, 0 Failures, 0 Errors)
+- **Unit Tests:** Individual feature computers ($F_{01}–F_{06}$), statistical calculations, score scaling, comparators, parsers.
+- **Integration Tests:** DuckDB parquet reader, CSV exporter, REST API MockMvc controllers.
+- **End-to-End Tests (`PredictionApiE2EIntegrationTest`):** Full-path execution against real DuckDB parquet telemetry.
+- **Regression Tests (`DuckDbTelemetryRepositoryRegressionTest`):** Hive partition globbing and timestamp comparison bug fixes.
+- **Live Session Tests (`RerunDynamicDataIntegrationTest`):** Proves new partition discovery on `/rerun` without JVM restart.
+- **CSV Gate Tests (`PredictionsCsvGenerationTest`):** Validates 120-row `predictions.csv` generation.
+- **Architecture Tests (`ArchitectureTest`):** 5/5 ArchUnit rules enforcing strict layer isolation.
 
 ---
 
-## Configuration Reference
+## Validation & Historical Backtesting
 
-All settings can be overridden via environment variables or JVM system properties:
+Sentinel's scoring engine uses **fixed engineering weights evaluated through walk-forward historical backtesting** across 11 historical validation weeks spanning 8 months of telemetry (`BACKTESTING.md`):
 
-| Property                         | Env Variable                   | Default      | Description                                       |
-|----------------------------------|--------------------------------|--------------|---------------------------------------------------|
-| `sentinel.data-dir`              | `SENTINEL_DATA_DIR`            | `data`       | Path to source telemetry and inventory data       |
-| `sentinel.visits-per-week`       | `SENTINEL_VISITS_PER_WEEK`     | `15`         | Number of visit recommendations per week          |
-| `sentinel.baseline-window-days`  | `SENTINEL_BASELINE_WINDOW_DAYS`| `28`         | Trailing baseline window size $[T-28d, T)$        |
-| `sentinel.recent-window-days`    | `SENTINEL_RECENT_WINDOW_DAYS`  | `7`          | Scoring anomaly window size $[T-7d, T)$           |
-| `sentinel.ranking-strategy`      | `SENTINEL_RANKING_STRATEGY`    | `risk-based` | Active ranking strategy (`risk-based`, `baseline`)|
+| Metric | Reference Baseline | Sentinel Risk-Based | Operational Contrast |
+| :--- | :--- | :--- | :--- |
+| **Confirmed Repairs (`Fehler behoben`)** | 15 repairs | **23 repairs** | **+53.3% confirmed repairs** |
+| **Visits with No Defect Found (`Kein Fehler`)** | 7 visits | **7 visits** | Equivalent precision |
+| **Engineer Review Match (`Schlecht`)** | 27 gateways | **39 gateways** | **+44.4% expert agreement** |
+| **Total Impacted Meters Prioritized** | — | **35,968 meters** | High customer blast radius |
+| **Illustrative Outage Penalty Avoidance** | Base | **+€19,200** | Model assumption (4-wk persistence) |
+
+> **Operational Evidence Note:**  
+> Across 11 historical walk-forward validation weeks, Sentinel selected 23 gateways associated with confirmed repairs versus 15 selected by the baseline (+53.3%). This is evidence from historical validation, not a claim of realized financial savings.  
+> Furthermore, 60.7% of historical field visits resulted in no defect being found (`Kein Fehler gefunden`), reflecting high operational uncertainty in past human dispatching rather than proof that the initial alert was false.
 
 ---
 
-## Data Safety Guarantee
+## Limitations — What Sentinel Cannot Do
 
-- Challenge data in `/data` is strictly ignored in `.gitignore` and `.dockerignore`.
-- DuckDB queries operate in **read-only mode** directly against Parquet files.
-- `git ls-files data/` returns 0 files.
+1. **Telemetry & Data-Pipeline Outages:** An upstream failure in telemetry collection produces an absence of records that can resemble a physical gateway failure. Sentinel flags communications distress, but cannot distinguish an ingestion pipeline outage from a physical gateway failure without out-of-band pipeline health checks.
+2. **Facility-Wide Power & Cellular Carrier Outages:** A regional cellular tower (BTS) outage or building power cut takes multiple gateways and meters offline simultaneously. Sentinel detects technical distress on individual gateways, but requires external grid topology to identify regional common-mode failures.
+3. **Unlabeled & Unvisited Gateways Are Not Automatically Healthy:** Technician visits are capped at 15 per week. Unvisited gateways (~285 units) are not inspected; absence of a service ticket does not prove operational health.
+4. **Historical Field Visits Suffer Selection Bias:** Past work orders reflect where human operators chose to send technicians. The 60.7% no-defect rate reflects historical dispatch uncertainty rather than an unbiased random fleet trial.
+5. **Meter-Read Success Ingestion Lag:** Auxiliary meter success data terminates on 2026-01-26 (5-week lag for March 2026 predictions). It is quarantined strictly to descriptive context ($F_{07}$) and never used for active scoring to avoid temporal leakage.
+6. **Deterministic Decision Support vs. Physical Proof:** Sentinel is an operational decision-support tool that prioritizes technician dispatch under capacity constraints. It does not provide physical proof of hardware failure prior to on-site inspection.
+
+*(See [LIMITATIONS.md](LIMITATIONS.md) for complete technical constraints).*
+
+---
+
+## AI Usage Disclosure
+
+All development adhered to transparent human-in-the-loop engineering. AI tooling (Antigravity AI) was utilized for scaffolding, test construction, and documentation. All architectural decisions, mathematical formulations, economic tradeoffs, and temporal boundaries were human-directed and verified. *(See [AI-USAGE.md](AI-USAGE.md) for phase-by-phase breakdown).*
+
+---
+
+## Project Structure
+
+```
+sentinel/
+├── pom.xml                               # Maven build configuration
+├── mvnw / mvnw.cmd                       # Maven wrappers (Linux / Windows)
+├── compose.yaml                          # Docker Compose configuration
+├── predictions.csv                       # NEXORA Part 1 Gate artifact (120 rows)
+├── README.md                             # Evaluator-first documentation
+├── DECISIONS.md                          # 25% Judgement Architecture Decision Records
+├── LIMITATIONS.md                        # Known constraints & out-of-scope items
+├── AI-USAGE.md                           # AI tool disclosure & oversight record
+├── BACKTESTING.md                        # 11-week historical calibration report
+├── docker/
+│   ├── Dockerfile                        # Multi-stage distroless-style build
+│   └── docker-compose.yml                # Secondary compose spec
+├── src/
+│   ├── main/
+│   │   ├── java/com/lpdg/sentinel/
+│   │   │   ├── application/              # Services, ports, explanation, CSV export
+│   │   │   ├── domain/                   # Pure business models, features, ranking
+│   │   │   ├── infrastructure/           # DuckDB, CSV, configuration adapters
+│   │   │   └── web/                      # REST controllers, DTOs, RFC-7807 errors
+│   │   └── resources/
+│   │       ├── application.yml           # Externalized configuration properties
+│   │       └── static/index.html         # Single-file Operator Decision Console
+│   └── test/                             # 200 automated tests (Unit, E2E, ArchUnit)
+```

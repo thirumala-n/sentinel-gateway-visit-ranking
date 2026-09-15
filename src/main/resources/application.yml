@@ -15,11 +15,11 @@ server:
 
 # ── Sentinel Configuration ────────────────────────────────────
 sentinel:
-  data-dir: ${SENTINEL_DATA_DIR:data}
+  data-dir: ${SENTINEL_DATA_DIR:${data:data}}
   visits-per-week: ${SENTINEL_VISITS_PER_WEEK:15}
   baseline-window-days: ${SENTINEL_BASELINE_WINDOW_DAYS:28}
   recent-window-days: ${SENTINEL_RECENT_WINDOW_DAYS:7}
-  scored-weeks: ${SENTINEL_SCORED_WEEKS:4}
+  scored-weeks: ${SENTINEL_SCORED_WEEKS:8}
 
 # ── Actuator ──────────────────────────────────────────────────
 management:

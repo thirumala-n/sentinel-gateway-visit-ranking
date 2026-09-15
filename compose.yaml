@@ -1,11 +1,12 @@
 # ══════════════════════════════════════════════════════════════
-# Sentinel — Docker Compose
+# Sentinel — Docker Compose (NEXORA 2026)
+# Usage: docker compose up --build
 # ══════════════════════════════════════════════════════════════
 
 services:
   sentinel:
     build:
-      context: ..
+      context: .
       dockerfile: docker/Dockerfile
     container_name: sentinel
     ports:
@@ -17,7 +18,7 @@ services:
       - SENTINEL_RECENT_WINDOW_DAYS=7
       - SENTINEL_SCORED_WEEKS=8
     volumes:
-      - ../data:/app/data:ro
+      - ./data:/app/data:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
       interval: 30s

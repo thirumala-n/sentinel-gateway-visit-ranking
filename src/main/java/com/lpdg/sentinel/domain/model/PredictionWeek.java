@@ -2,6 +2,7 @@ package com.lpdg.sentinel.domain.model;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -24,6 +25,17 @@ import java.util.Objects;
  * {@code targetMonday} — observations on or after that date are never loaded.
  */
 public record PredictionWeek(LocalDate targetMonday) {
+
+    /** Authoritative NEXORA 2026 8-week competition evaluation schedule. */
+    public static final List<LocalDate> OFFICIAL_COMPETITION_WEEKS = List.of(
+            LocalDate.of(2026, 2, 2),
+            LocalDate.of(2026, 2, 9),
+            LocalDate.of(2026, 2, 16),
+            LocalDate.of(2026, 2, 23),
+            LocalDate.of(2026, 3, 2),
+            LocalDate.of(2026, 3, 9),
+            LocalDate.of(2026, 3, 16),
+            LocalDate.of(2026, 3, 23));
 
     /** Number of days in the baseline history window. */
     public static final int BASELINE_DAYS = 28;

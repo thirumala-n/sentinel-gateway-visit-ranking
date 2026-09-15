@@ -11,9 +11,11 @@ data/
 *.parquet
 *.xlsx
 
-# Challenge CSVs in root/data are ignored, but test fixtures under src/ are allowed
+# Challenge CSVs in root/data are ignored, but test fixtures under src/ and submission artifact are allowed
 *.csv
 !src/test/resources/**
+!predictions.csv
+!/predictions.csv
 
 # ── IDE files ─────────────────────────────────────────────────
 .idea/
@@ -34,9 +36,10 @@ Thumbs.db
 *.swo
 *.bak
 
-# ── Logs ─────────────────────────────────────────────────────
+# ── Logs & Scratch ───────────────────────────────────────────
 *.log
 logs/
+scratch/
 
 # ── Environment / secrets ────────────────────────────────────
 .env

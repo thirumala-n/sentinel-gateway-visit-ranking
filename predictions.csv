@@ -1,0 +1,121 @@
+week_start,rank,gateway_id,score,reason
+2026-02-02,1,0A2778A31BE3,21.4412,30 offline anomaly hours; recent outage is deteriorating. 140 meters affected.
+2026-02-02,2,06F49BD8F572,16.3500,13h reboot distress; recent outage is deteriorating. 149 meters affected.
+2026-02-02,3,0AA296FF247D,13.3067,21 offline anomaly hours. 273 meters affected.
+2026-02-02,4,0ED5057ECE3F,9.1799,12 offline anomaly hours. 357 meters affected.
+2026-02-02,5,02D7623552C8,8.4727,6h reboot distress. 141 meters affected.
+2026-02-02,6,0AD276FC5E27,7.6029,13 offline anomaly hours. 147 meters affected.
+2026-02-02,7,02097AB58D3C,7.5435,11 offline anomaly hours. 315 meters affected.
+2026-02-02,8,0EE09EDA649F,7.4997,10 offline anomaly hours. 259 meters affected.
+2026-02-02,9,0AB6B45C775A,7.2064,Detectable technical distress. 199 meters affected.
+2026-02-02,10,061A4322745C,6.5056,7h offline anomalies; recent outage is deteriorating. 173 meters affected.
+2026-02-02,11,024570739DE0,6.4644,recent outage is deteriorating. 106 meters affected.
+2026-02-02,12,0E5CD9B19DCB,6.1974,9 offline anomaly hours. 281 meters affected.
+2026-02-02,13,0E9DC914D8DF,5.9968,10 offline anomaly hours; recent outage is recovering. 151 meters affected.
+2026-02-02,14,02423E0E6E9F,5.9899,Detectable technical distress. 297 meters affected.
+2026-02-02,15,0ABD2E513F79,5.5792,7h offline anomalies; recent outage is deteriorating. 189 meters affected.
+2026-02-09,1,0EA061007895,98.5520,No telemetry received in scoring week; communications failure cannot be excluded. Gateway active in inventory. 145 meters potentially affected.
+2026-02-09,2,02097AB58D3C,15.0870,22 offline anomaly hours. 315 meters affected.
+2026-02-09,3,0AB6B45C775A,12.9716,8h reboot distress; recent outage is deteriorating. 199 meters affected.
+2026-02-09,4,0A68F38A6ACF,11.7214,24 offline anomaly hours. 78 meters affected.
+2026-02-09,5,0A3528D089D9,9.9965,14 offline anomaly hours; recent outage is deteriorating. 166 meters affected.
+2026-02-09,6,0A7AC5BDAF86,9.7297,12 offline anomaly hours; recent outage is deteriorating. 305 meters affected.
+2026-02-09,7,0ED5057ECE3F,8.7711,9 offline anomaly hours; recent outage is deteriorating. 357 meters affected.
+2026-02-09,8,06132D7396F8,8.5813,15 offline anomaly hours. 96 meters affected.
+2026-02-09,9,06F49BD8F572,8.3608,4h reboot distress. 149 meters affected.
+2026-02-09,10,0228A99EE35A,7.4731,17 offline anomaly hours; recent outage is recovering. 121 meters affected.
+2026-02-09,11,0A1FB1C98A92,7.4274,13 offline anomaly hours. 131 meters affected.
+2026-02-09,12,0E8B8566815B,6.9151,7h offline anomalies; recent outage is accelerating. 267 meters affected.
+2026-02-09,13,0A55DA266F71,6.7859,12 offline anomaly hours. 120 meters affected.
+2026-02-09,14,0E9DC914D8DF,6.5793,11 offline anomaly hours. 151 meters affected.
+2026-02-09,15,0AE6BF39C720,6.5333,15 offline anomaly hours; recent outage is recovering. 77 meters affected.
+2026-02-16,1,02D49A34B2FE,20.3287,23 offline anomaly hours. 418 meters affected.
+2026-02-16,2,0228A99EE35A,18.4143,29 offline anomaly hours. 121 meters affected.
+2026-02-16,3,0AE6BF39C720,17.7413,28 offline anomaly hours; recent outage is deteriorating. 77 meters affected.
+2026-02-16,4,06238EE3BE6C,12.6906,17 offline anomaly hours; recent outage is deteriorating. 228 meters affected.
+2026-02-16,5,0A4E33E2692B,12.2890,11h reboot distress. 170 meters affected.
+2026-02-16,6,0A4673793B3E,11.6180,16 offline anomaly hours. 549 meters affected.
+2026-02-16,7,0A68F38A6ACF,10.4248,11h reboot distress. 78 meters affected.
+2026-02-16,8,0AA2F2CAB50B,9.9705,recent outage is deteriorating. 187 meters affected.
+2026-02-16,9,0A3983033084,9.8044,15 offline anomaly hours. 184 meters affected.
+2026-02-16,10,06F170E6BB03,9.6334,15 offline anomaly hours. 168 meters affected.
+2026-02-16,11,024570739DE0,9.4272,Detectable technical distress. 106 meters affected.
+2026-02-16,12,060EE3CB4779,8.8188,15 offline anomaly hours; recent outage is deteriorating. 69 meters affected.
+2026-02-16,13,0E9DC914D8DF,8.7083,15 offline anomaly hours. 151 meters affected.
+2026-02-16,14,06F49BD8F572,8.5672,6h reboot distress. 149 meters affected.
+2026-02-16,15,0A96EACD8070,8.3991,11 offline anomaly hours; recent outage is deteriorating. 208 meters affected.
+2026-02-23,1,0E69C64B6E57,20.5155,33 offline anomaly hours. 184 meters affected.
+2026-02-23,2,0EF023E6452D,18.8034,17 offline anomaly hours; 11h reboot distress. 123 meters affected.
+2026-02-23,3,0228A99EE35A,18.4991,19h reboot distress. 121 meters affected.
+2026-02-23,4,0A3983033084,16.0897,25 offline anomaly hours. 184 meters affected.
+2026-02-23,5,060EE3CB4779,13.9619,27 offline anomaly hours. 69 meters affected.
+2026-02-23,6,0A4E33E2692B,12.2890,11h reboot distress. 170 meters affected.
+2026-02-23,7,0AA296FF247D,12.1496,7h reboot distress. 273 meters affected.
+2026-02-23,8,0E1D7CA1DB0C,11.5356,16 offline anomaly hours. 525 meters affected.
+2026-02-23,9,02D49A34B2FE,11.4538,8h reboot distress. 418 meters affected.
+2026-02-23,10,02D7623552C8,11.0248,10h reboot distress. 141 meters affected.
+2026-02-23,11,0A4673793B3E,9.6104,13 offline anomaly hours. 549 meters affected.
+2026-02-23,12,0E2728C481CA,8.2219,14 offline anomaly hours. 103 meters affected.
+2026-02-23,13,0A7AC5BDAF86,8.1081,12 offline anomaly hours. 305 meters affected.
+2026-02-23,14,0E485CCBF90A,7.7742,14 offline anomaly hours. 118 meters affected.
+2026-02-23,15,0EF437108E63,6.7870,10 offline anomaly hours. 279 meters affected.
+2026-03-02,1,0EE587927263,104.4188,No telemetry received in scoring week; communications failure cannot be excluded. Gateway active in inventory. 195 meters potentially affected.
+2026-03-02,2,02043B6BA08B,18.1112,19 offline anomaly hours; recent outage is deteriorating. 475 meters affected.
+2026-03-02,3,0A8407CF4D85,17.2279,27 offline anomaly hours. 236 meters affected.
+2026-03-02,4,0228A99EE35A,16.3821,12h reboot distress; recent outage is deteriorating. 121 meters affected.
+2026-03-02,5,0EF023E6452D,13.8970,14h reboot distress. 123 meters affected.
+2026-03-02,6,0E1D7CA1DB0C,12.2001,17 offline anomaly hours. 525 meters affected.
+2026-03-02,7,0E5303C82FCB,11.8202,19 offline anomaly hours. 238 meters affected.
+2026-03-02,8,0EEA98D1BFDB,11.6548,13 offline anomaly hours; recent outage is deteriorating. 587 meters affected.
+2026-03-02,9,02D49A34B2FE,9.5863,7h reboot distress. 418 meters affected.
+2026-03-02,10,024DD3A9ADCA,9.1720,8h reboot distress. 187 meters affected.
+2026-03-02,11,0A7AC5BDAF86,8.5362,9 offline anomaly hours; recent outage is accelerating. 305 meters affected.
+2026-03-02,12,06C77FEA9550,7.4995,15 offline anomaly hours. 54 meters affected.
+2026-03-02,13,02892F51E1CB,7.3944,4h reboot distress. 127 meters affected.
+2026-03-02,14,0A96EACD8070,7.2037,10 offline anomaly hours. 208 meters affected.
+2026-03-02,15,0A4673793B3E,7.0042,6h offline anomalies; recent outage is accelerating. 549 meters affected.
+2026-03-09,1,02D3289B907C,93.0815,No telemetry received in scoring week; communications failure cannot be excluded. Gateway active in inventory. 110 meters potentially affected.
+2026-03-09,2,0EEA98D1BFDB,12.6617,16 offline anomaly hours. 587 meters affected.
+2026-03-09,3,0ABC8E60F4C1,12.0431,20 offline anomaly hours. 81 meters affected.
+2026-03-09,4,0E5303C82FCB,12.0298,18 offline anomaly hours. 238 meters affected.
+2026-03-09,5,024DD3A9ADCA,11.6538,10h reboot distress. 187 meters affected.
+2026-03-09,6,065B928716CD,10.6626,8h reboot distress; recent outage is deteriorating. 108 meters affected.
+2026-03-09,7,06AEE181F595,10.1171,15 offline anomaly hours. 340 meters affected.
+2026-03-09,8,0AA2F2CAB50B,9.9705,recent outage is deteriorating. 187 meters affected.
+2026-03-09,9,02F5CE7705EC,9.0777,13 offline anomaly hours. 387 meters affected.
+2026-03-09,10,02D49A34B2FE,7.7189,6h reboot distress. 418 meters affected.
+2026-03-09,11,0EF023E6452D,7.5441,6h reboot distress. 123 meters affected.
+2026-03-09,12,0AB5F9C21BF8,7.2818,11 offline anomaly hours. 258 meters affected.
+2026-03-09,13,0E69783262BE,6.3918,10 offline anomaly hours. 201 meters affected.
+2026-03-09,14,02478CD90F3A,6.1153,11 offline anomaly hours. 106 meters affected.
+2026-03-09,15,0AF51D7D0F73,6.0864,9 offline anomaly hours. 254 meters affected.
+2026-03-16,1,0A182EFD3C61,23.3691,34 offline anomaly hours; recent outage is deteriorating. 124 meters affected.
+2026-03-16,2,02F5CE7705EC,21.1402,28 offline anomaly hours. 387 meters affected.
+2026-03-16,3,0253BB40EDA6,20.7689,32 offline anomaly hours. 281 meters affected.
+2026-03-16,4,0EEA98D1BFDB,16.8172,18 offline anomaly hours; recent outage is deteriorating. 587 meters affected.
+2026-03-16,5,024DD3A9ADCA,11.2222,6h reboot distress. 187 meters affected.
+2026-03-16,6,024570739DE0,9.4272,Detectable technical distress. 106 meters affected.
+2026-03-16,7,0EF47B410B41,8.3684,12 offline anomaly hours; recent outage is deteriorating. 137 meters affected.
+2026-03-16,8,0A184A2E46B7,8.0112,13 offline anomaly hours; recent outage is deteriorating. 80 meters affected.
+2026-03-16,9,02D49A34B2FE,7.7687,recent outage is deteriorating. 418 meters affected.
+2026-03-16,10,060C5773A61B,6.8639,Detectable technical distress. 116 meters affected.
+2026-03-16,11,0ED0849FD6D8,6.5469,10 offline anomaly hours. 80 meters affected.
+2026-03-16,12,0AC437023B18,6.4032,Detectable technical distress. 138 meters affected.
+2026-03-16,13,0230EEF72435,6.2174,10 offline anomaly hours. 351 meters affected.
+2026-03-16,14,06D6B7018E15,6.0921,7h offline anomalies; recent outage is accelerating. 306 meters affected.
+2026-03-16,15,06AEE181F595,6.0600,recent outage is deteriorating. 340 meters affected.
+2026-03-23,1,0656377B3078,15.7415,29 offline anomaly hours; recent outage is deteriorating. 42 meters affected.
+2026-03-23,2,0253BB40EDA6,13.5912,20 offline anomaly hours. 281 meters affected.
+2026-03-23,3,0EF47B410B41,12.3815,21 offline anomaly hours. 137 meters affected.
+2026-03-23,4,0616F247083A,11.6079,16 offline anomaly hours. 546 meters affected.
+2026-03-23,5,0A182EFD3C61,9.9431,9h reboot distress. 124 meters affected.
+2026-03-23,6,0687F36E02C6,9.3056,14 offline anomaly hours. 302 meters affected.
+2026-03-23,7,06AEE181F595,7.0700,recent outage is deteriorating. 340 meters affected.
+2026-03-23,8,06EA136A2996,7.0210,9 offline anomaly hours; recent outage is deteriorating. 205 meters affected.
+2026-03-23,9,0EE587927263,6.6567,recent outage is deteriorating. 195 meters affected.
+2026-03-23,10,0ED0849FD6D8,6.5391,9 offline anomaly hours; recent outage is deteriorating. 80 meters affected.
+2026-03-23,11,021406F56396,6.1980,7h offline anomalies; recent outage is deteriorating. 338 meters affected.
+2026-03-23,12,0239AD51B7AF,5.8339,9 offline anomaly hours. 109 meters affected.
+2026-03-23,13,0EE09EDA649F,5.7312,7h offline anomalies. 259 meters affected.
+2026-03-23,14,0A71A8A716F2,5.3071,9 offline anomaly hours. 125 meters affected.
+2026-03-23,15,02D7623552C8,5.1449,recent outage is deteriorating. 141 meters affected.

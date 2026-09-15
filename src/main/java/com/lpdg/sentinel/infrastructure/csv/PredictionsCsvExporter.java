@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -28,7 +29,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PredictionsCsvExporter {
 
-    public static final String[] HEADERS = {"week", "rank", "gateway_id", "score", "reason"};
+    public static final String[] HEADERS = {"week_start", "rank", "gateway_id", "score", "reason"};
 
     private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT.builder()
             .setHeader(HEADERS)
@@ -42,9 +43,20 @@ public class PredictionsCsvExporter {
      * @return CSV formatted string with headers
      */
     public String exportToString(WeeklyPredictionsResult result) {
+        Objects.requireNonNull(result, "result must not be null");
+        return exportAllToString(List.of(result));
+    }
+
+    /**
+     * Exports multiple weekly prediction results into a single consolidated CSV string.
+     *
+     * @param results list of canonical weekly prediction results
+     * @return CSV formatted string with header and all rows
+     */
+    public String exportAllToString(List<WeeklyPredictionsResult> results) {
         StringWriter writer = new StringWriter();
         try {
-            exportToWriter(result, writer);
+            exportAllToWriter(results, writer);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to format CSV string", e);
         }
@@ -60,18 +72,31 @@ public class PredictionsCsvExporter {
      */
     public void exportToWriter(WeeklyPredictionsResult result, Writer writer) throws IOException {
         Objects.requireNonNull(result, "result must not be null");
+        exportAllToWriter(List.of(result), writer);
+    }
+
+    /**
+     * Writes multiple weekly prediction results as CSV to the specified {@link Writer}.
+     *
+     * @param results list of canonical weekly prediction results
+     * @param writer destination writer
+     * @throws IOException if writing fails
+     */
+    public void exportAllToWriter(List<WeeklyPredictionsResult> results, Writer writer) throws IOException {
+        Objects.requireNonNull(results, "results must not be null");
         Objects.requireNonNull(writer, "writer must not be null");
 
-        String weekStr = result.week().targetMonday().toString();
-
         try (CSVPrinter printer = new CSVPrinter(writer, CSV_FORMAT)) {
-            for (PredictionRecord record : result.items()) {
-                printer.printRecord(
-                        weekStr,
-                        record.rank(),
-                        record.gatewayId().value(),
-                        String.format(java.util.Locale.ROOT, "%.4f", record.score()),
-                        record.reason());
+            for (WeeklyPredictionsResult result : results) {
+                String weekStr = result.week().targetMonday().toString();
+                for (PredictionRecord record : result.items()) {
+                    printer.printRecord(
+                            weekStr,
+                            record.rank(),
+                            record.gatewayId().value(),
+                            String.format(java.util.Locale.ROOT, "%.4f", record.score()),
+                            record.reason());
+                }
             }
             printer.flush();
         }
@@ -85,9 +110,21 @@ public class PredictionsCsvExporter {
      * @throws IOException if file write fails
      */
     public void exportToFile(WeeklyPredictionsResult result, Path destination) throws IOException {
+        Objects.requireNonNull(result, "result must not be null");
+        exportAllToFile(List.of(result), destination);
+    }
+
+    /**
+     * Exports multiple weekly prediction results to a consolidated file on disk.
+     *
+     * @param results list of canonical weekly prediction results
+     * @param destination target file path
+     * @throws IOException if file write fails
+     */
+    public void exportAllToFile(List<WeeklyPredictionsResult> results, Path destination) throws IOException {
         Objects.requireNonNull(destination, "destination must not be null");
         try (Writer writer = Files.newBufferedWriter(destination, StandardCharsets.UTF_8)) {
-            exportToWriter(result, writer);
+            exportAllToWriter(results, writer);
         }
     }
 }

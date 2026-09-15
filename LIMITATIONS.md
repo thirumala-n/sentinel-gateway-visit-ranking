@@ -1,42 +1,55 @@
-# Sentinel — Known Limitations
+# Sentinel — Known Limitations & Operational Constraints
 
-This document lists known limitations, constraints, and out-of-scope items.
+This document outlines the operational boundaries, known limitations, and non-goals of project **Sentinel**.
 
 ---
 
-## Current Limitations
+## 1. Operational Reality — What Sentinel Cannot Do
+
+In field operations, data telemetry provides strong evidence but cannot capture every physical reality. Evaluators and dispatch operators should be aware of the following concrete boundaries:
+
+1. **Telemetry & Data-Pipeline Outage Resemblance:**
+   An upstream failure in data ingestion (e.g. broker disconnect, cellular gateway collector downtime, corrupted ingestion pipeline) produces an absence of records ($F_{03} = 48\text{h}$ or `MISSING_TELEMETRY`). Sentinel detects that telemetry is missing, but cannot definitively distinguish an ingestion pipeline outage from a physical gateway failure without out-of-band monitoring.
+
+2. **Facility-Wide Power & Regional Cellular Mast Failures:**
+   If an entire municipal facility experiences a mains power cut or a regional cellular base transceiver station (BTS) fails, all gateways in that geographic cluster go offline simultaneously. Dispatching 10 technicians to individual gateways in the same sector would waste operational budget on issues that require a facility electrician or telecom provider intervention.
+
+3. **Unlabeled & Unvisited Gateways Are Not Automatically Healthy:**
+   Technician capacity is strictly capped at 15 visits per week. The remaining ~285 gateways in the fleet are unvisited and unlabeled in historical logs. The absence of a technician ticket does **not** prove a gateway is healthy; unvisited gateways simply fell outside the top-15 capacity window.
+
+4. **Historical Field Visits Suffer Strong Observational & Selection Bias:**
+   In `field_visits.csv` (642 historical records), 60.7% of visits resulted in no defect being found (`Kein Fehler gefunden`). This indicates high operational uncertainty in past human dispatching practices, rather than proof that the initial operational anomaly was false. Historical visit logs reflect where past operators chose to look, not an unbiased random trial.
+
+5. **Meter-Read Success Historical Cutoff & Ingestion Lag:**
+   The auxiliary meter readings file (`meter_read_success.csv`) ends on 2026-01-26. When scoring March 2026 weeks, this data carries a 5-week lag. Consequently, meter reading success cannot be used as an active runtime scoring feature without introducing stale or leaked observations; it is strictly quarantined to descriptive context ($F_{07}$).
+
+6. **Deterministic Decision Support vs. Physical Proof:**
+   Sentinel is an operational **decision-support tool** that optimizes the weekly 15-visit budget using multi-dimensional telemetry evidence. It does not provide absolute physical proof of hardware failure prior to physical on-site inspection.
+
+---
+
+## 2. Technical & Architectural Constraints
 
 ### Architecture & Operational Constraints
+- **Single-node DuckDB engine:** DuckDB is an in-process analytical OLAP engine. It is optimized for single-machine execution and does not support distributed clustering across multiple physical nodes.
+- **Batch-oriented execution:** Features and baseline statistics are computed on weekly batch boundaries (every Monday 00:00 UTC), not in continuous streaming millisecond intervals.
+- **Read-only input contract:** Sentinel strictly reads parquet telemetry and CSV files from `./data` and never mutates source datasets.
+- **No online weight adaptation:** Fixed engineering weights are evaluated via walk-forward historical backtesting; the service does not alter scoring weights dynamically in production without explicit configuration changes.
 
-- **Single-node only.** DuckDB is an in-process analytical engine; horizontal scaling is not supported.
-- **Batch-oriented.** The service processes telemetry and extracts features on a weekly batch basis (every Monday 00:00 UTC), not in real-time streaming mode.
-- **Read-only input data.** The system strictly reads parquet telemetry, CSV meter readings, and inventory without mutating source files.
-- **No active learning or online feedback loop.** Field technician repair outcomes are evaluated during offline historical backtesting; the ranking engine does not dynamically self-update weights in production without recalibration.
+### Explainability Constraints
+- **Structured rule-based rationales:** Explanations are generated through deterministic structured templates ($F_{01}–F_{05}$ attributions) rather than generative LLMs. This guarantees byte-for-byte reproducibility and eliminates hallucinations, but does not provide free-form conversational interaction.
+- **Static severity thresholds:** Severity categories (`CRITICAL`, `HIGH`, `MODERATE`, `LOW`) are anchored to fixed operational benchmarks ($84\text{h}$ offline, $48\text{h}$ continuous outage). Significant structural shifts in fleet size or reporting intervals would warrant reviewing these bounds.
 
-### Ranking & Feature Limitations
+### API & Concurrency Scope
+- **Synchronous recomputation on `/rerun`:** `POST /api/v1/predictions/{week}/rerun` recomputes the target week synchronously in ~1.5 seconds. Burst concurrent reruns on the exact same week execute sequentially on DuckDB.
+- **Unauthenticated REST API:** Per NEXORA competition guidelines, the service provides open REST endpoints without API keys or OAuth authentication. Production deployment requires placing Sentinel behind a TLS-terminating reverse proxy.
 
-- **Heuristic composite model.** Ranking uses a calibrated multi-criteria scoring function ($R = R_{\text{tech}} \times M(m)$) rather than a black-box machine learning model, optimizing for determinism, interpretability, and auditability.
-- **Baseline drift.** 28-day rolling baseline statistics adapt to seasonal fluctuations, but extended outages (>28 days) will eventually shift the baseline mean downward unless tracked across longer windows.
-- **Meter reading granularity.** CSV meter readings represent sporadic counter reads rather than high-frequency telemetry; consumption anomaly features ($F_{08}$) have higher variance on newly deployed meters.
+---
 
-### Explainability Limitations (Phase 5)
+## 3. Out of Scope
 
-- **Deterministic template explanations.** Explanations are generated via rule-based structured templates rather than LLM text generation. While eliminating hallucinations and guaranteeing reproducibility, explanations lack conversational flexibility.
-- **Static severity thresholds.** Feature severity boundaries (e.g. F01 $\ge 42\text{h}$, F03 $\ge 24\text{h}$) are anchored to the ranking model's normalization denominators ($84\text{h}$, $48\text{h}$) established during the 8-month calibration window. Substantial fleet topology shifts would require reviewing these thresholds.
-- **Pairwise comparison scope.** `RankingComparisonReport` highlights score differentials and dominant feature contrasts between any two gateways, but does not simulate counterfactual hypothetical feature interventions.
-
-### API & Live-Demo Limitations (Phase 6)
-
-- **Node-local in-memory cache.** Weekly predictions are cached in a thread-safe `ConcurrentHashMap`. Restarting the application clears the cache, requiring the first prediction request for a week to run the ~1.5s analytical extraction pipeline before subsequent requests return in <1ms.
-- **Synchronous rerun pipeline.** The `POST /rerun` endpoint executes feature extraction and ranking synchronously. While optimized via DuckDB fleet aggregation (~1.5s total), burst concurrent reruns will queue on the single in-process DuckDB instance.
-- **Rerun cache consistency under concurrent load.** The `/rerun` endpoint evicts the cache entry (`remove`) then recomputes (`computeIfAbsent`). These two operations are not atomic: under extreme concurrent load, a concurrent `GET` request arriving between eviction and recomputation could theoretically be served a stale cached result re-inserted by another thread. In the expected competition and operator-demo usage profile (single operator, sequential requests), this window is negligible.
-- **Unauthenticated REST boundary.** By competition design, the REST API does not enforce JWT/OAuth authentication; production deployment requires fronting with an API gateway or reverse proxy with TLS termination.
-
-
-### Out of Scope
-
-- End-user web UI / frontend dashboard (API / CLI export oriented)
-- Real-time streaming telemetry ingestion (Kafka/MQTT)
-- Multi-tenant tenant isolation
-- Database write-back migrations (no persistent state beyond read-only analytical stores)
+- Distributed stream processing (Kafka/Flink/Spark)
+- Multi-tenant cloud SaaS authentication & user billing
+- Database migration writes back to operational SCADA systems
+- Heavy frontend build toolchains (React/Next.js/npm; Sentinel uses a zero-dependency static HTML/CSS/JS console served by Spring Boot)
 

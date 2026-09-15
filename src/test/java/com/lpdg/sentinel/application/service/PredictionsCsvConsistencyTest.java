@@ -93,7 +93,7 @@ class PredictionsCsvConsistencyTest {
                 CSVRecord csvRow = records.get(i);
 
                 // 1. Week agreement — CSV must agree with the model's actual target week
-                assertThat(csvRow.get("week"))
+                assertThat(csvRow.get("week_start"))
                         .isEqualTo(result.week().targetMonday().toString());
 
                 // 2. Rank agreement

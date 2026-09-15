@@ -1,297 +1,514 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SENTINEL — Gateway Visit Decision Console</title>
-  <meta name="description" content="LPDG × RGM Innovation Challenge: Top-5 Competition-Grade Gateway Visit Prioritization & Decision Explainability Console.">
+  <meta name="description" content="Sentinel: Enterprise Gateway Reliability & Field Planning Decision System. Weekly field visit prioritization with deterministic explainability.">
+  <script>
+    // Immediate theme initialization to prevent flash of incorrect theme
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem('sentinel_theme');
+        if (savedTheme === 'dark' || savedTheme === 'light') {
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
   <style>
-    /* ═══════════════════════════════════════════════════════════════
-       SENTINEL OPERATOR DECISION CONSOLE — CORE DESIGN SYSTEM
-       Theme: Operations Control Room / Deep Slate & Cyan Accent
-       ═══════════════════════════════════════════════════════════════ */
-    :root {
-      --bg-base: #070d18;
-      --bg-surface: #0e1726;
-      --bg-surface-elevated: #142036;
-      --bg-surface-card: rgba(17, 28, 48, 0.75);
-      --border-subtle: rgba(148, 163, 184, 0.12);
-      --border-medium: rgba(148, 163, 184, 0.22);
-      --border-focus: #06b6d4;
+    /* ═══════════════════════════════════════════════════════════════════════
+       SENTINEL OPERATOR DECISION CONSOLE — ENTERPRISE DESIGN SYSTEM
+       Theme System: Light Enterprise Operations (Default) & Dark Control Room
+       Philosophy: Restraint, Decision Clarity, High Density, Zero Gimmicks
+       ═══════════════════════════════════════════════════════════════════════ */
+    
+    /* ── Light Enterprise Theme (Default) ─────────────────────────── */
+    :root, [data-theme="light"] {
+      --bg-canvas: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-elevated: #ffffff;
+      --bg-hover: #f8fafc;
       
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --text-highlight: #38bdf8;
+      --border-light: #e2e8f0;
+      --border-medium: #cbd5e1;
+      --border-focus: #2563eb;
       
-      --accent-cyan: #06b6d4;
-      --accent-teal: #14b8a6;
-      --accent-sky: #0ea5e9;
-      --accent-blue: #3b82f6;
+      --text-primary: #0f172a;       /* Slate 900 */
+      --text-secondary: #334155;     /* Slate 700 */
+      --text-muted: #64748b;         /* Slate 500 */
+      --text-subtle: #94a3b8;        /* Slate 400 */
+      --text-inverse: #ffffff;
       
-      --risk-critical: #ef4444;
-      --risk-critical-bg: rgba(239, 68, 68, 0.14);
-      --risk-critical-border: rgba(239, 68, 68, 0.35);
-      
-      --risk-high: #f97316;
-      --risk-high-bg: rgba(249, 115, 22, 0.14);
-      --risk-high-border: rgba(249, 115, 22, 0.35);
-      
-      --risk-medium: #f59e0b;
-      --risk-medium-bg: rgba(245, 158, 11, 0.14);
-      --risk-medium-border: rgba(245, 158, 11, 0.35);
-      
-      --risk-low: #10b981;
-      --risk-low-bg: rgba(16, 185, 129, 0.14);
-      --risk-low-border: rgba(16, 185, 129, 0.35);
+      --brand-slate: #0f172a;
+      --brand-slate-hover: #1e293b;
+      --brand-accent: #2563eb;
+      --brand-accent-subtle: #eff6ff;
+      --brand-accent-border: #bfdbfe;
 
-      --category-missing: #a855f7;
-      --category-missing-bg: rgba(168, 85, 247, 0.14);
-      --category-missing-border: rgba(168, 85, 247, 0.35);
+      /* Semantic Risk Colors */
+      --risk-critical-text: #991b1b;
+      --risk-critical-bg: #fef2f2;
+      --risk-critical-border: #fecaca;
+      --risk-critical-dot: #dc2626;
 
-      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --risk-high-text: #9a3412;
+      --risk-high-bg: #fff7ed;
+      --risk-high-border: #fed7aa;
+      --risk-high-dot: #ea580c;
+
+      --risk-moderate-text: #854d0e;
+      --risk-moderate-bg: #fefce8;
+      --risk-moderate-border: #fef08a;
+      --risk-moderate-dot: #ca8a04;
+
+      --risk-low-text: #166534;
+      --risk-low-bg: #f0fdf4;
+      --risk-low-border: #bbf7d0;
+      --risk-low-dot: #16a34a;
+
+      --category-missing-text: #6b21a8;
+      --category-missing-bg: #faf5ff;
+      --category-missing-border: #e9d5ff;
+      --category-missing-dot: #9333ea;
+
+      --category-confidence-text: #92400e;
+      --category-confidence-bg: #fffbeb;
+      --category-confidence-border: #fde68a;
+
+      --category-fallback-text: #475569;
+      --category-fallback-bg: #f8fafc;
+      --category-fallback-border: #e2e8f0;
+
+      --table-header-bg: #f8fafc;
+      --table-header-color: #334155;
+      --table-row-hover: #f8fafc;
+      --table-row-active: #eff6ff;
+
+      --modal-backdrop: rgba(15, 23, 42, 0.45);
+      --shadow-xs: 0 1px 2px 0 rgba(16, 24, 40, 0.04);
+      --shadow-sm: 0 1px 3px 0 rgba(16, 24, 40, 0.08), 0 1px 2px -1px rgba(16, 24, 40, 0.06);
+      --shadow-modal: 0 20px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
     }
 
-    * {
+    /* ── Dark Enterprise Operations Theme (Control Room) ──────────── */
+    [data-theme="dark"] {
+      --bg-canvas: #090d16;          /* Deep calm slate */
+      --bg-surface: #111827;         /* Slate 900 */
+      --bg-subtle: #1e293b;         /* Slate 800 */
+      --bg-elevated: #162032;
+      --bg-hover: #1e293b;
+      
+      --border-light: #1e293b;
+      --border-medium: #334155;
+      --border-focus: #3b82f6;
+      
+      --text-primary: #f8fafc;       /* Slate 50 */
+      --text-secondary: #cbd5e1;     /* Slate 300 */
+      --text-muted: #94a3b8;         /* Slate 400 */
+      --text-subtle: #64748b;        /* Slate 500 */
+      --text-inverse: #0f172a;
+      
+      --brand-slate: #1e293b;
+      --brand-slate-hover: #334155;
+      --brand-accent: #3b82f6;
+      --brand-accent-subtle: rgba(59, 130, 246, 0.15);
+      --brand-accent-border: rgba(59, 130, 246, 0.35);
+
+      /* Semantic Risk Colors in Dark Theme */
+      --risk-critical-text: #fca5a5;
+      --risk-critical-bg: rgba(220, 38, 38, 0.18);
+      --risk-critical-border: rgba(239, 68, 68, 0.4);
+      --risk-critical-dot: #ef4444;
+
+      --risk-high-text: #fdba74;
+      --risk-high-bg: rgba(234, 88, 12, 0.18);
+      --risk-high-border: rgba(249, 115, 22, 0.4);
+      --risk-high-dot: #f97316;
+
+      --risk-moderate-text: #fde047;
+      --risk-moderate-bg: rgba(202, 138, 4, 0.18);
+      --risk-moderate-border: rgba(234, 179, 8, 0.4);
+      --risk-moderate-dot: #eab308;
+
+      --risk-low-text: #86efac;
+      --risk-low-bg: rgba(22, 163, 74, 0.18);
+      --risk-low-border: rgba(34, 197, 94, 0.4);
+      --risk-low-dot: #22c55e;
+
+      --category-missing-text: #d8b4fe;
+      --category-missing-bg: rgba(147, 51, 234, 0.18);
+      --category-missing-border: rgba(168, 85, 247, 0.4);
+      --category-missing-dot: #a855f7;
+
+      --category-confidence-text: #fde68a;
+      --category-confidence-bg: rgba(217, 119, 6, 0.18);
+      --category-confidence-border: rgba(245, 158, 11, 0.4);
+
+      --category-fallback-text: #cbd5e1;
+      --category-fallback-bg: #1e293b;
+      --category-fallback-border: #334155;
+
+      --table-header-bg: #0d1524;
+      --table-header-color: #cbd5e1;
+      --table-row-hover: #162032;
+      --table-row-active: #172554;
+
+      --modal-backdrop: rgba(0, 0, 0, 0.75);
+      --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+      --shadow-modal: 0 20px 30px -5px rgba(0, 0, 0, 0.7);
+    }
+
+    /* System Font Stacks */
+    :root {
+      --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    /* Reset & Base Setup */
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
     body {
-      background-color: var(--bg-base);
-      background-image: 
-        radial-gradient(ellipse at 50% 0%, rgba(6, 182, 212, 0.07) 0%, transparent 60%),
-        linear-gradient(to bottom, #070d18, #0a1120);
+      background-color: var(--bg-canvas);
       color: var(--text-primary);
-      font-family: var(--font-stack);
-      font-size: 14px;
+      font-family: var(--font-system);
+      font-size: 13px;
       line-height: 1.5;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.15s ease, color 0.15s ease;
     }
 
-    /* ── Top Header ────────────────────────────────────────────── */
-    header {
-      background: rgba(14, 23, 38, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-subtle);
+    /* ── 1. Top Enterprise Header ─────────────────────────────────── */
+    .app-header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-light);
       position: sticky;
       top: 0;
-      z-index: 50;
-      padding: 12px 28px;
+      z-index: 40;
+      padding: 8px 24px;
+      box-shadow: var(--shadow-xs);
+      transition: background-color 0.15s ease, border-color 0.15s ease;
     }
 
-    .header-inner {
+    .header-container {
       max-width: 1440px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    .brand-group {
+    .brand-section {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
     }
 
-    .logo-badge {
-      background: linear-gradient(135deg, #0891b2, #0284c7);
+    .brand-badge {
+      background: var(--brand-slate);
       color: #ffffff;
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      padding: 6px 12px;
-      border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
-      display: flex;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
+      line-height: 1.2;
+      border: 1px solid transparent;
     }
 
-    .pulse-dot {
-      width: 7px;
-      height: 7px;
-      background-color: #22d3ee;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #22d3ee;
-      animation: pulse 2s infinite ease-in-out;
+    [data-theme="dark"] .brand-badge {
+      background: #1e293b;
+      border-color: var(--border-medium);
+      color: #f8fafc;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
+    .brand-titles {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
     }
 
     .brand-title {
-      font-size: 18px;
+      font-size: 14px;
       font-weight: 700;
-      letter-spacing: -0.3px;
-      color: #ffffff;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+      line-height: 1.2;
+      margin: 0;
     }
 
     .brand-subtitle {
-      font-size: 12px;
-      color: var(--text-secondary);
+      font-size: 11px;
+      color: var(--text-muted);
       font-weight: 500;
+      line-height: 1.2;
     }
 
-    .system-status-group {
+    .brand-sep {
+      color: var(--border-medium);
+      padding: 0 2px;
+    }
+
+    .header-status-strip {
       display: flex;
       align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .header-meta-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--border-light);
+    }
+
+    .header-utility-group {
+      display: flex;
+      align-items: center;
     }
 
     .status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
       font-weight: 600;
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
+      line-height: 1.3;
+      white-space: nowrap;
     }
 
     .status-pill.healthy {
-      color: #34d399;
-      border-color: rgba(52, 211, 153, 0.3);
-      background: rgba(16, 185, 129, 0.1);
+      background: var(--risk-low-bg);
+      border: 1px solid var(--risk-low-border);
+      color: var(--risk-low-text);
+      letter-spacing: 0.2px;
     }
 
     .status-pill.unhealthy {
-      color: #f87171;
-      border-color: rgba(248, 113, 113, 0.3);
-      background: rgba(239, 68, 68, 0.1);
+      background: var(--risk-critical-bg);
+      border: 1px solid var(--risk-critical-border);
+      color: var(--risk-critical-text);
+      letter-spacing: 0.2px;
     }
 
     .status-pill.strategy {
-      color: var(--text-highlight);
-      border-color: rgba(56, 189, 248, 0.3);
-      background: rgba(14, 165, 233, 0.08);
+      background: transparent;
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
     }
 
-    /* ── Main Container ────────────────────────────────────────── */
+    [data-theme="dark"] .status-pill.strategy {
+      border-color: var(--border-medium);
+      color: var(--text-secondary);
+    }
+
+    .status-pill.timestamp {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 2px;
+    }
+
+    /* Theme Toggle Button */
+    .theme-toggle-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-medium);
+      color: var(--text-secondary);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      line-height: 1.3;
+      transition: all 0.15s ease;
+      outline: none;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border-color: var(--border-focus);
+    }
+
+    /* ── Main Layout Canvas ───────────────────────────────────────── */
     main {
       max-width: 1440px;
       margin: 0 auto;
-      padding: 24px 28px 48px;
+      padding: 12px 24px 32px;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 12px;
     }
 
-    /* ── Controls Toolbar ──────────────────────────────────────── */
-    .controls-panel {
+    /* ── 2. Unified Weekly Decision & Controls Bar ────────────────── */
+    .decision-command-card {
       background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 16px 20px;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 11px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-    }
-
-    .controls-left {
-      display: flex;
-      align-items: center;
       gap: 14px;
       flex-wrap: wrap;
+      box-shadow: var(--shadow-xs);
     }
 
-    .control-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
+    .command-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      max-width: 600px;
+    }
+
+    .command-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--brand-accent);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.7px;
     }
 
-    .date-input-wrapper {
-      position: relative;
+    .command-headline {
+      font-size: 16.5px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
       display: flex;
       align-items: center;
+      gap: 8px;
+    }
+
+    .command-count-pill {
+      background: var(--brand-accent-subtle);
+      color: var(--brand-accent);
+      border: 1px solid var(--brand-accent-border);
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 15px;
+    }
+
+    .command-subtext {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    .command-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .week-picker-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--bg-subtle);
+      padding: 3px 5px;
+      border-radius: 5px;
+      border: 1px solid var(--border-light);
     }
 
     .date-input {
-      background: var(--bg-base);
+      background: var(--bg-surface);
       border: 1px solid var(--border-medium);
       color: var(--text-primary);
       font-family: var(--font-mono);
-      font-size: 13px;
-      padding: 8px 12px;
-      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 7px;
+      border-radius: 4px;
       outline: none;
-      transition: all 0.2s ease;
-      width: 135px;
+      width: 105px;
+      transition: border-color 0.15s ease;
     }
 
     .date-input:focus {
       border-color: var(--border-focus);
-      box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
     }
 
     .quick-weeks {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 3px;
     }
 
     .quick-btn {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
+      background: transparent;
+      border: 1px solid transparent;
       color: var(--text-secondary);
-      padding: 5px 9px;
-      border-radius: 5px;
+      padding: 3px 6px;
+      border-radius: 4px;
       font-size: 11px;
+      font-weight: 600;
       font-family: var(--font-mono);
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.12s ease;
     }
 
     .quick-btn:hover {
+      background: var(--bg-surface);
+      border-color: var(--border-light);
       color: var(--text-primary);
-      border-color: var(--border-medium);
-      background: rgba(30, 41, 59, 0.8);
     }
 
     .quick-btn.active {
-      color: #38bdf8;
-      border-color: rgba(56, 189, 248, 0.5);
-      background: rgba(14, 165, 233, 0.15);
-      font-weight: 600;
+      background: var(--bg-surface);
+      border-color: var(--brand-accent);
+      color: var(--brand-accent);
+      box-shadow: var(--shadow-xs);
     }
 
-    .controls-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
+    /* Primary & Secondary Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 13px;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 11.5px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
       border: 1px solid transparent;
       outline: none;
     }
@@ -302,116 +519,60 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #0891b2, #0284c7);
+      background: var(--brand-slate);
       color: #ffffff;
-      box-shadow: 0 2px 8px rgba(6, 182, 212, 0.25);
+      box-shadow: var(--shadow-xs);
     }
 
     .btn-primary:hover:not(:disabled) {
-      background: linear-gradient(135deg, #06b6d4, #0369a1);
-      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
-      transform: translateY(-1px);
+      background: var(--brand-slate-hover);
     }
 
     .btn-secondary {
-      background: var(--bg-surface-elevated);
-      border-color: var(--border-medium);
-      color: var(--text-primary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      color: var(--text-secondary);
     }
 
     .btn-secondary:hover:not(:disabled) {
-      background: rgba(30, 41, 59, 0.9);
-      border-color: var(--text-secondary);
-      transform: translateY(-1px);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
     }
 
     .btn-rerun {
-      background: rgba(168, 85, 247, 0.15);
-      border-color: rgba(168, 85, 247, 0.35);
-      color: #d8b4fe;
+      background: var(--bg-surface);
+      border-color: var(--border-medium);
+      color: var(--text-secondary);
     }
 
     .btn-rerun:hover:not(:disabled) {
-      background: rgba(168, 85, 247, 0.25);
-      border-color: rgba(168, 85, 247, 0.6);
-      transform: translateY(-1px);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
     }
 
-    /* ── Operational Workflow Pipeline ──────────────────────────── */
-    .workflow-strip {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 10px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      overflow-x: auto;
-    }
-
-    .workflow-step {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--text-secondary);
-      white-space: nowrap;
-    }
-
-    .workflow-step.active {
-      color: var(--text-highlight);
-      font-weight: 600;
-    }
-
-    .step-num {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-medium);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 700;
-      font-family: var(--font-mono);
-    }
-
-    .workflow-step.active .step-num {
-      background: rgba(14, 165, 233, 0.2);
-      border-color: #38bdf8;
-      color: #38bdf8;
-    }
-
-    .workflow-arrow {
-      color: var(--text-muted);
-      font-size: 11px;
-    }
-
-    /* ── Alert Toast Banner ────────────────────────────────────── */
+    /* Alert Banner */
     .alert-banner {
       display: none;
-      padding: 12px 18px;
-      border-radius: 8px;
-      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 12px;
       font-weight: 500;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       animation: fadeIn 0.2s ease-in-out;
     }
 
     .alert-banner.error {
-      background: rgba(239, 68, 68, 0.12);
+      background: var(--risk-critical-bg);
       border: 1px solid var(--risk-critical-border);
-      color: #fca5a5;
+      color: var(--risk-critical-text);
     }
 
     .alert-banner.success {
-      background: rgba(16, 185, 129, 0.12);
+      background: var(--risk-low-bg);
       border: 1px solid var(--risk-low-border);
-      color: #6ee7b7;
+      color: var(--risk-low-text);
     }
 
     .alert-close {
@@ -419,113 +580,340 @@
       border: none;
       color: inherit;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1;
       padding: 0 4px;
     }
 
-    /* ── Executive KPI Metric Cards ────────────────────────────── */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-    }
-
-    .metric-card {
+    /* ── 3. Operational Focus: Priority #1 Dominant Component ──────── */
+    .priority-one-card {
       background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 16px 18px;
+      border: 1px solid var(--risk-critical-border);
+      border-left: 4px solid var(--risk-critical-dot);
+      border-radius: 8px;
+      padding: 14px 18px;
       display: flex;
       flex-direction: column;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .priority-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .priority-kicker {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--risk-critical-dot);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
       gap: 6px;
-      transition: border-color 0.2s ease;
     }
 
-    .metric-card:hover {
-      border-color: var(--border-medium);
+    .priority-kicker .kicker-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--risk-critical-dot);
+      border-radius: 50%;
     }
 
-    .metric-title {
-      font-size: 11px;
-      font-weight: 600;
+    .gw-hero-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .gw-hero-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .rank-badge-hero {
+      background: var(--risk-critical-bg);
+      border: 1px solid var(--risk-critical-border);
+      color: var(--risk-critical-dot);
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 900;
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gw-hero-id {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: 0.4px;
+    }
+
+    .gw-badges-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 3px;
+      flex-wrap: wrap;
+    }
+
+    .hero-score-box {
+      text-align: right;
+    }
+
+    .hero-score-num {
+      font-size: 25px;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .hero-score-label {
+      font-size: 9.5px;
+      font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
     }
 
-    .metric-value-row {
+    /* Signals Chips Container */
+    .signals-container {
       display: flex;
-      align-items: baseline;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .signals-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .signals-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .signal-chip {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      padding: 3px 7px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .signal-chip.accent {
+      background: var(--risk-critical-bg);
+      border-color: var(--risk-critical-border);
+      color: var(--risk-critical-text);
+    }
+
+    .signal-chip.meters {
+      background: var(--brand-accent-subtle);
+      border-color: var(--brand-accent-border);
+      color: var(--brand-accent);
+    }
+
+    .priority-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-light);
+      margin-top: auto;
+      flex-wrap: wrap;
+    }
+
+    .priority-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .priority-footer-text {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .methodology-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--brand-accent);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+
+    .methodology-toggle-btn:hover {
+      text-decoration: underline;
+    }
+
+    /* Collapsible Methodology Panel (Progressive Disclosure) */
+    .methodology-disclosure-panel {
+      display: none;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-top: 6px;
+      animation: fadeIn 0.15s ease-out;
+    }
+
+    .methodology-disclosure-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 8px;
     }
 
-    .metric-value {
-      font-size: 26px;
-      font-weight: 700;
-      color: #ffffff;
-      font-family: var(--font-mono);
-      letter-spacing: -0.5px;
-    }
-
-    .metric-sub {
+    .method-pill-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--bg-surface);
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border-light);
       font-size: 11px;
+    }
+
+    .method-pill-title {
       color: var(--text-secondary);
+      font-weight: 600;
     }
 
-    /* ── Main Workspace Grid ───────────────────────────────────── */
-    .workspace-grid {
+    .method-pill-weight {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--brand-accent);
+    }
+
+    /* ── 4. Executive KPI Decision Strip ─────────────────────────── */
+    .kpi-strip {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
     }
 
-    /* ── Card Panel Container ──────────────────────────────────── */
+    .kpi-cell {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      box-shadow: var(--shadow-xs);
+      transition: border-color 0.15s ease;
+    }
+
+    .kpi-cell:hover {
+      border-color: var(--border-medium);
+    }
+
+    .kpi-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .kpi-value {
+      font-size: 20px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+
+    .kpi-sub {
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+
+    /* ── 5. Field Visit Work Queue (The Scannable Table) ──────────── */
     .panel {
       background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--shadow-xs);
     }
 
     .panel-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border-light);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      background: rgba(14, 23, 38, 0.4);
+      background: var(--bg-subtle);
     }
 
-    .panel-title-group {
+    .panel-title-area {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
     .panel-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--text-primary);
       letter-spacing: -0.2px;
     }
 
     .panel-badge {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      padding: 2px 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      padding: 2px 7px;
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 600;
-      color: var(--text-highlight);
+      color: var(--text-secondary);
       font-family: var(--font-mono);
     }
 
-    /* ── Table Design ──────────────────────────────────────────── */
-    .table-responsive {
+    .table-container {
       overflow-x: auto;
+      max-height: 640px;
     }
 
     table {
@@ -535,203 +923,222 @@
     }
 
     th {
-      background: rgba(15, 23, 42, 0.6);
-      color: var(--text-muted);
-      font-size: 11px;
-      font-weight: 600;
+      background: var(--table-header-bg);
+      color: var(--table-header-color);
+      font-size: 10.5px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.6px;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border-subtle);
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border-medium);
       white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border-subtle);
-      font-size: 13px;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 12.5px;
       vertical-align: middle;
-      transition: background-color 0.15s ease;
+      transition: background-color 0.1s ease;
     }
 
     tbody tr {
       cursor: pointer;
+      transition: background-color 0.12s ease;
     }
 
     tbody tr:hover {
-      background: rgba(30, 41, 59, 0.4);
+      background-color: var(--table-row-hover);
     }
 
     tbody tr.active-row {
-      background: rgba(6, 182, 212, 0.08);
-      border-left: 3px solid var(--accent-cyan);
+      background-color: var(--table-row-active);
+      border-left: 3px solid var(--brand-accent);
     }
 
-    /* ── Table Cell Elements ───────────────────────────────────── */
+    /* Table Cell Specifics */
     .rank-cell {
-      font-weight: 700;
+      font-weight: 800;
       font-family: var(--font-mono);
+      font-size: 11.5px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
       color: var(--text-secondary);
     }
 
     .rank-top-1 {
-      background: rgba(239, 68, 68, 0.15);
-      border-color: rgba(239, 68, 68, 0.4);
-      color: #fca5a5;
+      background: var(--risk-critical-bg);
+      border-color: var(--risk-critical-border);
+      color: var(--risk-critical-dot);
     }
 
     .rank-top-2 {
-      background: rgba(249, 115, 22, 0.15);
-      border-color: rgba(249, 115, 22, 0.4);
-      color: #fdba74;
+      background: var(--brand-accent-subtle);
+      border-color: var(--brand-accent-border);
+      color: var(--brand-accent);
     }
 
     .rank-top-3 {
-      background: rgba(245, 158, 11, 0.15);
-      border-color: rgba(245, 158, 11, 0.4);
-      color: #fde047;
+      background: var(--risk-high-bg);
+      border-color: var(--risk-high-border);
+      color: var(--risk-high-dot);
     }
 
     .gateway-id {
       font-family: var(--font-mono);
-      font-weight: 600;
-      color: #e2e8f0;
-      letter-spacing: 0.5px;
+      font-weight: 700;
+      font-size: 12.5px;
+      color: var(--text-primary);
+      letter-spacing: 0.3px;
     }
 
-    .score-container {
+    .score-box {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      min-width: 100px;
+      gap: 3px;
+      min-width: 90px;
     }
 
-    .score-number {
+    .score-value {
       font-family: var(--font-mono);
       font-weight: 700;
-      font-size: 13px;
-      color: #ffffff;
+      font-size: 12.5px;
+      color: var(--text-primary);
     }
 
-    .score-bar-track {
+    .score-bar-bg {
       height: 4px;
       width: 100%;
-      background: rgba(148, 163, 184, 0.12);
+      background: var(--border-light);
       border-radius: 2px;
       overflow: hidden;
     }
 
-    .score-bar-fill {
+    .score-bar-value {
       height: 100%;
-      background: linear-gradient(90deg, #06b6d4, #0284c7);
+      background: var(--text-secondary);
       border-radius: 2px;
+      transition: width 0.3s ease;
     }
 
-    /* Badges */
+    /* Semantic Status Badges (Crisp, Restrained with Status Dot) */
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 3px 8px;
+      padding: 2px 7px;
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 600;
       letter-spacing: 0.2px;
       white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .badge-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      display: inline-block;
     }
 
     .badge.risk-critical {
       background: var(--risk-critical-bg);
-      border: 1px solid var(--risk-critical-border);
-      color: #fca5a5;
+      border-color: var(--risk-critical-border);
+      color: var(--risk-critical-text);
     }
+    .badge.risk-critical .badge-dot { background: var(--risk-critical-dot); }
 
     .badge.risk-high {
       background: var(--risk-high-bg);
-      border: 1px solid var(--risk-high-border);
-      color: #fdba74;
+      border-color: var(--risk-high-border);
+      color: var(--risk-high-text);
     }
+    .badge.risk-high .badge-dot { background: var(--risk-high-dot); }
 
-    .badge.risk-medium {
-      background: var(--risk-medium-bg);
-      border: 1px solid var(--risk-medium-border);
-      color: #fde047;
+    .badge.risk-moderate, .badge.risk-medium {
+      background: var(--risk-moderate-bg);
+      border-color: var(--risk-moderate-border);
+      color: var(--risk-moderate-text);
     }
+    .badge.risk-moderate .badge-dot, .badge.risk-medium .badge-dot { background: var(--risk-moderate-dot); }
 
     .badge.risk-low {
       background: var(--risk-low-bg);
-      border: 1px solid var(--risk-low-border);
-      color: #86efac;
+      border-color: var(--risk-low-border);
+      color: var(--risk-low-text);
     }
+    .badge.risk-low .badge-dot { background: var(--risk-low-dot); }
 
     .badge.category {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
+      background: var(--bg-subtle);
+      border-color: var(--border-light);
       color: var(--text-secondary);
       font-family: var(--font-mono);
       font-size: 10px;
     }
 
     .badge.category-high {
-      background: rgba(239, 68, 68, 0.12);
-      border-color: rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
+      background: var(--risk-critical-bg);
+      border-color: var(--risk-critical-border);
+      color: var(--risk-critical-text);
     }
 
     .badge.category-actionable {
-      background: rgba(245, 158, 11, 0.12);
-      border-color: rgba(245, 158, 11, 0.3);
-      color: #fde047;
+      background: var(--risk-high-bg);
+      border-color: var(--risk-high-border);
+      color: var(--risk-high-text);
     }
 
     .badge.category-missing {
       background: var(--category-missing-bg);
       border-color: var(--category-missing-border);
-      color: #d8b4fe;
+      color: var(--category-missing-text);
     }
 
     .badge.category-low-confidence {
-      background: rgba(217, 119, 6, 0.15);
-      border-color: rgba(217, 119, 6, 0.35);
-      color: #fde68a;
+      background: var(--category-confidence-bg);
+      border-color: var(--category-confidence-border);
+      color: var(--category-confidence-text);
     }
 
     .badge.category-fallback {
-      background: rgba(148, 163, 184, 0.12);
-      border-color: rgba(148, 163, 184, 0.25);
-      color: #cbd5e1;
+      background: var(--category-fallback-bg);
+      border-color: var(--category-fallback-border);
+      color: var(--category-fallback-text);
     }
 
     .badge.confidence-full {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #6ee7b7;
+      background: var(--risk-low-bg);
+      border-color: var(--risk-low-border);
+      color: var(--risk-low-text);
     }
 
     .badge.confidence-low {
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      color: #fde047;
+      background: var(--category-confidence-bg);
+      border-color: var(--category-confidence-border);
+      color: var(--category-confidence-text);
     }
 
     .badge.confidence-missing {
       background: var(--category-missing-bg);
-      border: 1px solid var(--category-missing-border);
-      color: #d8b4fe;
+      border-color: var(--category-missing-border);
+      color: var(--category-missing-text);
     }
 
     .reason-text {
       color: var(--text-secondary);
-      font-size: 12px;
-      max-width: 440px;
+      font-size: 11.5px;
+      max-width: 420px;
       line-height: 1.4;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -739,170 +1146,280 @@
       overflow: hidden;
     }
 
-    .action-buttons {
+    .action-group {
       display: flex;
       align-items: center;
       gap: 6px;
+      justify-content: flex-end;
     }
 
     .btn-tbl {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
       color: var(--text-secondary);
-      padding: 4px 8px;
+      padding: 3px 8px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.12s ease;
       white-space: nowrap;
     }
 
     .btn-tbl:hover {
-      color: #ffffff;
-      border-color: var(--border-medium);
-      background: rgba(30, 41, 59, 0.9);
-    }
-
-    /* ── Comparison Section ("Why #1 Above #2") ────────────────── */
-    .comparison-panel {
-      padding: 20px;
-    }
-
-    .comparison-selectors {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .compare-select-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .compare-select {
-      background: var(--bg-base);
-      border: 1px solid var(--border-medium);
-      color: var(--text-primary);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      padding: 8px 12px;
-      border-radius: 6px;
-      outline: none;
-      min-width: 220px;
-    }
-
-    .compare-select:focus {
+      background: var(--bg-subtle);
       border-color: var(--border-focus);
+      color: var(--border-focus);
     }
 
-    .vs-pill {
-      font-weight: 800;
-      color: var(--text-muted);
-      font-size: 12px;
-      letter-spacing: 1px;
-      padding-top: 18px;
+    .btn-tbl.primary {
+      background: var(--bg-subtle);
+      border-color: var(--border-medium);
+      color: var(--text-primary);
+      font-weight: 700;
     }
 
-    .comparison-report-card {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 18px;
+    .btn-tbl.primary:hover {
+      background: var(--brand-accent-subtle);
+      border-color: var(--brand-accent-border);
+      color: var(--brand-accent);
+    }
+
+    /* ── 6. Pairwise Decision Contrast ───────────────────────────── */
+    .comparison-section {
+      padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
 
-    .proximity-warning {
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      border-radius: 6px;
-      padding: 10px 14px;
-      color: #fde047;
+    .comparison-controls {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .selector-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .selector-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .compare-dropdown {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
       font-size: 12px;
+      font-weight: 600;
+      padding: 5px 9px;
+      border-radius: 4px;
+      outline: none;
+      min-width: 210px;
+    }
+
+    .compare-dropdown:focus {
+      border-color: var(--border-focus);
+    }
+
+    .vs-tag {
+      font-weight: 800;
+      color: var(--text-muted);
+      font-size: 10.5px;
+      letter-spacing: 1px;
+      padding-bottom: 7px;
+    }
+
+    .comparison-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .proximity-alert {
+      background: var(--category-confidence-bg);
+      border: 1px solid var(--category-confidence-border);
+      border-radius: 4px;
+      padding: 8px 12px;
+      color: var(--category-confidence-text);
+      font-size: 11.5px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .comparison-cards-row {
+    .contrast-columns {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 12px;
     }
 
-    .compare-side-card {
-      background: var(--bg-base);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 14px;
+    .side-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 5px;
     }
 
-    .compare-side-card.winner {
-      border-color: rgba(6, 182, 212, 0.4);
-      box-shadow: 0 0 12px rgba(6, 182, 212, 0.08);
+    .side-card.winner {
+      border-color: var(--brand-accent-border);
+      background: var(--bg-elevated);
+      box-shadow: 0 0 0 1px var(--brand-accent-border);
     }
 
-    .side-card-header {
+    .side-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .compare-reason-list {
+    .reasons-list {
       display: flex;
       flex-direction: column;
+      gap: 5px;
+      padding-left: 18px;
+    }
+
+    .reason-bullet {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+
+    /* ── 7. Architecture Intelligence Banner ──────────────────────── */
+    .architecture-banner {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 14px 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .arch-pillar {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .pillar-tag {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: var(--brand-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .pillar-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .pillar-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ── 8. Minimal Enterprise SaaS Footer ─────────────────────────── */
+    .app-footer {
+      border-top: 1px solid var(--border-light);
+      background: var(--bg-surface);
+      padding: 10px 24px;
+      font-size: 11px;
+      color: var(--text-muted);
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .footer-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      font-size: 11px;
+    }
+
+    .footer-brand strong {
+      color: var(--text-primary);
+      font-weight: 700;
+      letter-spacing: 0.6px;
+    }
+
+    .footer-meta {
+      display: flex;
+      align-items: center;
       gap: 8px;
-      padding-left: 20px;
+      font-size: 11px;
+      color: var(--text-muted);
     }
 
-    .compare-reason-item {
-      font-size: 13px;
-      color: #cbd5e1;
-      line-height: 1.5;
+    .footer-dot {
+      color: var(--border-medium);
+      font-size: 9px;
     }
 
-    /* ── Evidence Detail Modal ─────────────────────────────────── */
+    /* ── 9. Evidence Modal (Progressive Disclosure) ───────────────── */
     .modal-backdrop {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(6px);
+      background: var(--modal-backdrop);
+      backdrop-filter: blur(4px);
       z-index: 100;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      animation: fadeIn 0.2s ease-in-out;
+      animation: fadeIn 0.15s ease-out;
     }
 
     .modal-content {
       background: var(--bg-surface);
       border: 1px solid var(--border-medium);
-      border-radius: 12px;
-      max-width: 820px;
+      border-radius: 8px;
+      max-width: 860px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      box-shadow: var(--shadow-modal);
       display: flex;
       flex-direction: column;
     }
 
     .modal-header {
-      padding: 18px 24px;
-      border-bottom: 1px solid var(--border-subtle);
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-light);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
       position: sticky;
       top: 0;
       background: var(--bg-surface);
@@ -912,16 +1429,16 @@
     .modal-title-group {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .modal-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-primary);
       font-family: var(--font-mono);
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
     }
 
     .btn-close {
@@ -931,162 +1448,114 @@
       font-size: 20px;
       cursor: pointer;
       line-height: 1;
-      padding: 4px;
+      padding: 4px 6px;
       border-radius: 4px;
       transition: color 0.15s ease;
     }
 
     .btn-close:hover {
-      color: #ffffff;
+      color: var(--text-primary);
+      background: var(--bg-subtle);
     }
 
     .modal-body {
-      padding: 24px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
     }
 
     .evidence-section {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .evidence-section-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-secondary);
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.6px;
     }
 
     .evidence-summary-box {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 14px 16px;
-      font-size: 13px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 11px 13px;
+      font-size: 12.5px;
       line-height: 1.5;
-      color: #e2e8f0;
+      color: var(--text-secondary);
     }
 
     .contributions-table {
       width: 100%;
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
       overflow: hidden;
     }
 
     .contributions-table th {
-      padding: 10px 14px;
+      padding: 8px 12px;
+      background: var(--table-header-bg);
+      color: var(--table-header-color);
+      font-size: 10.5px;
     }
 
     .contributions-table td {
-      padding: 10px 14px;
-      font-size: 12px;
+      padding: 8px 12px;
+      font-size: 11.5px;
+    }
+
+    .feat-bar-track {
+      height: 4px;
+      width: 70px;
+      background: var(--border-light);
+      border-radius: 2px;
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    .feat-bar-fill {
+      height: 100%;
+      border-radius: 2px;
     }
 
     .warning-box {
-      background: rgba(239, 68, 68, 0.08);
-      border: 1px solid rgba(239, 68, 68, 0.25);
-      border-radius: 6px;
-      padding: 12px 16px;
-      font-size: 12px;
-      color: #fca5a5;
+      background: var(--risk-critical-bg);
+      border: 1px solid var(--risk-critical-border);
+      border-radius: 5px;
+      padding: 9px 12px;
+      font-size: 11.5px;
+      color: var(--risk-critical-text);
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
 
     .limitation-box {
-      background: rgba(148, 163, 184, 0.08);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 12px 16px;
-      font-size: 12px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 5px;
+      padding: 9px 12px;
+      font-size: 11.5px;
       color: var(--text-secondary);
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
 
-    /* ── Intelligence Architecture Card ────────────────────────── */
-    .architecture-banner {
-      background: linear-gradient(135deg, rgba(14, 23, 38, 0.9), rgba(15, 28, 50, 0.9));
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
-
-    .arch-pillar {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .pillar-tag {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--text-highlight);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
-    .pillar-name {
-      font-size: 14px;
-      font-weight: 700;
-      color: #ffffff;
-    }
-
-    .pillar-desc {
-      font-size: 12px;
-      color: var(--text-secondary);
-      line-height: 1.4;
-    }
-
-    /* ── Footer ────────────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--border-subtle);
-      padding: 20px 28px;
-      font-size: 12px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      max-width: 1440px;
-      margin: 0 auto;
-    }
-
-    .footer-links {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .footer-link {
-      color: var(--text-secondary);
-      text-decoration: none;
-      transition: color 0.15s ease;
-    }
-
-    .footer-link:hover {
-      color: var(--text-highlight);
-    }
-
-    /* ── Skeletons and Spinners ────────────────────────────────── */
+    /* ── Spinners & Animation ─────────────────────────────────────── */
     .spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-top-color: #ffffff;
+      width: 12px;
+      height: 12px;
+      border: 2px solid rgba(128, 128, 128, 0.3);
+      border-top-color: var(--text-primary);
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      animation: spin 0.7s linear infinite;
     }
 
     @keyframes spin {
@@ -1099,113 +1568,113 @@
     }
 
     .empty-state {
-      padding: 48px 24px;
+      padding: 32px 18px;
       text-align: center;
       color: var(--text-muted);
-      font-size: 14px;
+      font-size: 12.5px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
-    /* Responsive adjustments */
+    /* ── Responsive Viewport Optimizations ────────────────────────── */
     @media (max-width: 900px) {
-      .header-inner { flex-direction: column; align-items: flex-start; }
-      .controls-panel { flex-direction: column; align-items: stretch; }
-      .controls-left, .controls-right { justify-content: space-between; }
-      .comparison-cards-row { grid-template-columns: 1fr; }
+      .header-container { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .header-status-strip { flex-wrap: wrap; }
+      .decision-command-card { flex-direction: column; align-items: stretch; }
+      .command-right { justify-content: flex-start; }
+      .contrast-columns { grid-template-columns: 1fr; }
+      .footer-container { flex-direction: column; align-items: flex-start; gap: 6px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top System Navigation Header -->
-  <header>
-    <div class="header-inner">
-      <div class="brand-group">
-        <div class="logo-badge">
-          <div class="pulse-dot"></div>
-          SENTINEL
-        </div>
-        <div>
-          <div class="brand-title">Gateway Visit Decision Console</div>
-          <div class="brand-subtitle">LPDG × RGM Innovation Challenge · Top-5 Competition System</div>
+  <!-- 1. Top Enterprise Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-section">
+        <span class="brand-badge">SENTINEL</span>
+        <div class="brand-titles">
+          <!-- Semantic H1 for Accessibility & Test Contract Clarity -->
+          <h1 class="brand-title">Gateway Reliability &amp; Field Planning</h1>
+          <div class="brand-subtitle">Gateway Visit Decision Console <span class="brand-sep">·</span> Weekly field decisions, backed by evidence.</div>
         </div>
       </div>
 
-      <div class="system-status-group">
-        <div id="healthPill" class="status-pill healthy">
-          <span style="font-size: 8px;">●</span> SYSTEM HEALTHY
+      <div class="header-status-strip">
+        <div class="header-meta-group">
+          <div id="healthPill" class="status-pill healthy" title="Live system status from /actuator/health">
+            <span style="font-size: 7px;">●</span> SYSTEM HEALTHY
+          </div>
+          <div id="strategyPill" class="status-pill strategy" title="Active ranking engine strategy">
+            STRATEGY: RISK_BASED
+          </div>
+          <div id="timestampPill" class="status-pill timestamp" title="Last decision evaluation timestamp">
+            Generated: —
+          </div>
         </div>
-        <div id="strategyPill" class="status-pill strategy">
-          STRATEGY: RISK_BASED
-        </div>
-        <div id="timestampPill" class="status-pill" style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">
-          Generated: —
+        <div class="header-divider" aria-hidden="true"></div>
+        <div class="header-utility-group">
+          <!-- Accessible Theme Toggle Button -->
+          <button type="button" id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle visual theme" title="Switch theme (Light / Dark)">
+            <span id="themeToggleIcon">◐</span>
+            <span id="themeToggleLabel">Theme</span>
+          </button>
         </div>
       </div>
     </div>
   </header>
 
   <main>
-    <!-- Controls Toolbar -->
-    <section class="controls-panel" aria-label="Prediction Controls">
-      <div class="controls-left">
-        <span class="control-label">Prediction Week:</span>
-        <div class="date-input-wrapper">
-          <input type="text" id="weekInput" class="date-input" value="2026-03-09" placeholder="YYYY-MM-DD" maxlength="10">
+    <!-- 2. Unified Weekly Decision & Operational Command Card -->
+    <section class="decision-command-card" aria-label="Weekly Operational Decision Summary">
+      <div class="command-left">
+        <div class="command-kicker">
+          <span>●</span>
+          THIS WEEK'S OPERATIONAL FIELD DECISION
         </div>
-        <div class="quick-weeks">
-          <button type="button" class="quick-btn" data-week="2026-03-02">Mar 02</button>
-          <button type="button" class="quick-btn active" data-week="2026-03-09">Mar 09</button>
-          <button type="button" class="quick-btn" data-week="2026-03-16">Mar 16</button>
-          <button type="button" class="quick-btn" data-week="2026-03-23">Mar 23</button>
-          <button type="button" class="quick-btn" data-week="2026-03-30">Mar 30</button>
+        <div class="command-headline">
+          <span id="heroVisitCount" class="command-count-pill">15</span> Gateways Selected for Physical Field Inspection
+        </div>
+        <div class="command-subtext">
+          Field technician dispatch allocation for week starting <strong id="heroWeekLabel" style="color: var(--text-primary);">2026-03-09</strong>. Priority derived strictly from multi-horizon technical distress, sustained outage persistence, and downstream customer meter exposure.
         </div>
       </div>
 
-      <div class="controls-right">
-        <button type="button" id="loadBtn" class="btn btn-primary">
+      <div class="command-right">
+        <!-- Hidden elements preserved for contract compatibility -->
+        <span id="heroCapacity" style="display: none;">15 / 15 VISITS</span>
+        <span id="heroStrategy" style="display: none;">RISK_BASED</span>
+        <span id="heroHealth" style="display: none;">ONLINE · UP</span>
+
+        <div class="week-picker-group">
+          <input type="text" id="weekInput" class="date-input" value="2026-03-09" placeholder="YYYY-MM-DD" maxlength="10" aria-label="Decision week date">
+          <div class="quick-weeks">
+            <button type="button" class="quick-btn" data-week="2026-02-02">Feb 02</button>
+            <button type="button" class="quick-btn" data-week="2026-02-09">Feb 09</button>
+            <button type="button" class="quick-btn" data-week="2026-02-16">Feb 16</button>
+            <button type="button" class="quick-btn" data-week="2026-02-23">Feb 23</button>
+            <button type="button" class="quick-btn" data-week="2026-03-02">Mar 02</button>
+            <button type="button" class="quick-btn active" data-week="2026-03-09">Mar 09</button>
+            <button type="button" class="quick-btn" data-week="2026-03-16">Mar 16</button>
+            <button type="button" class="quick-btn" data-week="2026-03-23">Mar 23</button>
+          </div>
+        </div>
+
+        <button type="button" id="loadBtn" class="btn btn-primary" title="Load decisions for specified week">
           <span id="loadBtnText">LOAD DECISION</span>
         </button>
         <button type="button" id="rerunBtn" class="btn btn-secondary btn-rerun" title="Forces a fresh recomputation bypassing server cache">
           <span id="rerunBtnSpinner" class="spinner" style="display: none;"></span>
           <span id="rerunBtnText">RERUN DECISION</span>
         </button>
-        <button type="button" id="exportBtn" class="btn btn-secondary">
+        <button type="button" id="exportBtn" class="btn btn-secondary" title="Export current recommendations as RFC-4180 CSV">
           <span>EXPORT CSV</span>
         </button>
       </div>
     </section>
-
-    <!-- Operational Workflow Step Indicator -->
-    <div class="workflow-strip" aria-hidden="true">
-      <div class="workflow-step active">
-        <div class="step-num">1</div>
-        <span>Select Monday</span>
-      </div>
-      <div class="workflow-arrow">→</div>
-      <div class="workflow-step active">
-        <div class="step-num">2</div>
-        <span>Feature Extraction</span>
-      </div>
-      <div class="workflow-arrow">→</div>
-      <div class="workflow-step active">
-        <div class="step-num">3</div>
-        <span>Review 15 Visits</span>
-      </div>
-      <div class="workflow-arrow">→</div>
-      <div class="workflow-step">
-        <div class="step-num">4</div>
-        <span>Inspect Evidence & Contrast</span>
-      </div>
-      <div class="workflow-arrow">→</div>
-      <div class="workflow-step">
-        <div class="step-num">5</div>
-        <span>Dispatch Action</span>
-      </div>
-    </div>
 
     <!-- Alert / Toast Banner -->
     <div id="alertBanner" class="alert-banner error" role="alert">
@@ -1213,117 +1682,196 @@
       <button type="button" id="alertCloseBtn" class="alert-close" aria-label="Close alert">&times;</button>
     </div>
 
-    <!-- Executive KPI Metrics Strip -->
-    <section class="metrics-grid" aria-label="Operational Metrics">
-      <div class="metric-card">
-        <div class="metric-title">Recommended Visits</div>
-        <div class="metric-value-row">
-          <div id="metricSelected" class="metric-value">15</div>
-          <div class="metric-sub">of 15 cap</div>
+    <!-- 3. Operational Focus: Priority #1 Dominant Component -->
+    <section class="priority-one-card" aria-label="Top Priority Gateway Decision">
+      <div class="priority-header">
+        <div class="priority-kicker">
+          <span class="kicker-dot"></span>
+          #1 OPERATIONAL PRIORITY — WHY IS THIS GATEWAY #1?
+        </div>
+        <span id="topGwWeekTag" class="panel-badge">Week 2026-03-09</span>
+      </div>
+
+      <div class="gw-hero-row">
+        <div class="gw-hero-identity">
+          <div class="rank-badge-hero" id="topGwRank">#1</div>
+          <div>
+            <div class="gw-hero-id" id="topGwId">Loading...</div>
+            <div class="gw-badges-row">
+              <span id="topGwRisk" class="badge risk-critical"><span class="badge-dot"></span>CRITICAL</span>
+              <span id="topGwCategory" class="badge category">CATEGORY</span>
+              <span id="topGwConfidence" class="badge confidence-full">CONFIDENCE</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-score-box">
+          <div class="hero-score-num" id="topGwScore">—</div>
+          <div class="hero-score-label">Composite Distress Score</div>
         </div>
       </div>
-      <div class="metric-card">
-        <div class="metric-title">Critical Risk</div>
-        <div class="metric-value-row">
-          <div id="metricCritical" class="metric-value" style="color: #f87171;">—</div>
-          <div class="metric-sub">Immediate</div>
+
+      <div class="signals-container">
+        <div class="signals-label">Observable Distress Signals (API-Verified):</div>
+        <div class="signals-list" id="topGwSignals">
+          <span class="signal-chip">Loading signals...</span>
         </div>
       </div>
-      <div class="metric-card">
-        <div class="metric-title">High Risk</div>
-        <div class="metric-value-row">
-          <div id="metricHigh" class="metric-value" style="color: #fb923c;">—</div>
-          <div class="metric-sub">Elevated</div>
+
+      <div class="priority-footer">
+        <div class="priority-footer-left">
+          <div class="priority-footer-text" id="topGwSummarySnippet">
+            Full deterministic evidence verified against raw telemetry.
+          </div>
+          <button type="button" id="methodologyToggleBtn" class="methodology-toggle-btn" aria-expanded="false" aria-controls="methodologyDisclosure">
+            ⚙️ How Sentinel Prioritizes ▼
+          </button>
         </div>
+        <button type="button" class="btn btn-primary" id="topGwInspectBtn" data-action="inspect" data-gwid="" style="padding: 5px 12px; font-size: 11.5px;">
+          INSPECT EVIDENCE
+        </button>
       </div>
-      <div class="metric-card">
-        <div class="metric-title">Actionable / Medium</div>
-        <div class="metric-value-row">
-          <div id="metricMedium" class="metric-value" style="color: #facc15;">—</div>
-          <div class="metric-sub">Scheduled</div>
+
+      <!-- Collapsible Methodology Panel (Progressive Disclosure) -->
+      <div id="methodologyDisclosure" class="methodology-disclosure-panel">
+        <div style="font-size: 11px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">
+          DETERMINISTIC FORMULATION (5-PILLAR PARETO RANKING):
         </div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Target Horizon</div>
-        <div class="metric-value-row">
-          <div id="metricWeekLabel" class="metric-value" style="font-size: 20px; color: var(--text-highlight);">—</div>
+        <div class="methodology-disclosure-grid">
+          <div class="method-pill-item">
+            <span class="method-pill-title">1. Technical Distress (<code style="font-family: var(--font-mono);">F01</code> Offline Hours)</span>
+            <span class="method-pill-weight">45% Base</span>
+          </div>
+          <div class="method-pill-item">
+            <span class="method-pill-title">2. Outage Persistence (<code style="font-family: var(--font-mono);">F03</code> Max Consecutive)</span>
+            <span class="method-pill-weight">35% Base</span>
+          </div>
+          <div class="method-pill-item">
+            <span class="method-pill-title">3. Reboot Distress (<code style="font-family: var(--font-mono);">F02</code> Hardware Flapping)</span>
+            <span class="method-pill-weight">20% Base</span>
+          </div>
+          <div class="method-pill-item">
+            <span class="method-pill-title">4. Trajectory Adjustment (<code style="font-family: var(--font-mono);">F04</code> Trend Ratio)</span>
+            <span class="method-pill-weight">±20% Multiplier</span>
+          </div>
+          <div class="method-pill-item">
+            <span class="method-pill-title">5. Customer Impact (<code style="font-family: var(--font-mono);">F05</code> Installed Meters)</span>
+            <span class="method-pill-weight">Log-Scaled Exposure</span>
+          </div>
         </div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Telemetry Integrity</div>
-        <div class="metric-value-row">
-          <div id="metricConfidence" class="metric-value" style="font-size: 16px; color: #34d399;">VERIFIED</div>
-          <div class="metric-sub">Zero Leakage</div>
+        <div style="font-size: 10.5px; color: var(--text-muted); margin-top: 6px;">
+          🛡️ Backend-Authoritative Formulation · Zero Temporal Leakage · Strict Deterministic Tie-Breaking
         </div>
       </div>
     </section>
 
-    <!-- Workspace Grid: Table + Pairwise Contrast -->
-    <div class="workspace-grid">
-      <!-- Top 15 Recommendations Table Panel -->
-      <section class="panel" aria-label="Top 15 Gateway Visit Recommendations">
-        <div class="panel-header">
-          <div class="panel-title-group">
-            <h2 class="panel-title">Top 15 Gateway Visit Recommendations</h2>
-            <span id="tableCapacityBadge" class="panel-badge">15 Candidates</span>
-          </div>
-          <div style="font-size: 12px; color: var(--text-muted);">
-            Click row or <span style="color: var(--text-highlight); font-weight: 600;">Inspect</span> for evidence breakdown
-          </div>
+    <!-- 4. Executive KPI Decision Strip -->
+    <section class="kpi-strip" aria-label="Operational Metrics">
+      <div class="kpi-cell">
+        <div class="kpi-label">Visits Allocated</div>
+        <div class="kpi-value-row">
+          <div id="metricSelected" class="kpi-value">15</div>
+          <div class="kpi-sub">of 15 budget</div>
         </div>
-
-        <div class="table-responsive">
-          <table id="predictionsTable">
-            <thead>
-              <tr>
-                <th style="width: 50px;">Rank</th>
-                <th style="width: 130px;">Gateway ID</th>
-                <th style="width: 140px;">Composite Score</th>
-                <th style="width: 110px;">Risk Level</th>
-                <th style="width: 140px;">Category</th>
-                <th style="width: 130px;">Confidence</th>
-                <th>Primary Decision Evidence</th>
-                <th style="width: 140px; text-align: right;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="predictionsTableBody">
-              <!-- Dynamically populated -->
-              <tr>
-                <td colspan="8">
-                  <div class="empty-state">
-                    <div class="spinner"></div>
-                    <div>Loading Sentinel decision recommendations...</div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">Critical Risk</div>
+        <div class="kpi-value-row">
+          <div id="metricCritical" class="kpi-value" style="color: var(--risk-critical-dot);">—</div>
+          <div class="kpi-sub">Immediate Dispatch</div>
         </div>
-      </section>
-
-      <!-- Pairwise Decision Contrast ("Why Gateway A Ranked Above Gateway B") -->
-      <section class="panel comparison-panel" aria-label="Pairwise Decision Contrast">
-        <div class="panel-header" style="margin: -20px -20px 20px; border-radius: 10px 10px 0 0;">
-          <div class="panel-title-group">
-            <h2 class="panel-title">Pairwise Decision Justification</h2>
-            <span class="panel-badge">Why #1 Ranked Above #2</span>
-          </div>
-          <div style="font-size: 12px; color: var(--text-muted);">
-            Inspect observable feature contrasts and tie-breaking rationale
-          </div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">High &amp; Moderate Risk</div>
+        <div class="kpi-value-row">
+          <div id="metricHighModerate" class="kpi-value" style="color: var(--risk-high-dot);">—</div>
+          <div class="kpi-sub">Elevated Watch</div>
         </div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">Downstream Meters Exposed</div>
+        <div class="kpi-value-row">
+          <div id="metricMeters" class="kpi-value" style="color: var(--brand-accent);">—</div>
+        </div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">Peak Distress Score</div>
+        <div class="kpi-value-row">
+          <div id="metricTopScore" class="kpi-value">—</div>
+          <div class="kpi-sub">/ 100 max</div>
+        </div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">Decision Horizon</div>
+        <div class="kpi-value-row">
+          <div id="metricWeekLabel" class="kpi-value" style="font-size: 15px; color: var(--text-secondary);">—</div>
+        </div>
+      </div>
+    </section>
 
-        <div class="comparison-selectors">
-          <div class="compare-select-wrapper">
-            <label for="compareSelectA" class="control-label">Gateway A (Higher Priority):</label>
-            <select id="compareSelectA" class="compare-select"></select>
+    <!-- 5. Field Visit Work Queue Table -->
+    <section class="panel" aria-label="Top 15 Gateway Visit Recommendations">
+      <div class="panel-header">
+        <div class="panel-title-area">
+          <h2 class="panel-title">Top 15 Gateway Visit Recommendations</h2>
+          <span id="tableCapacityBadge" class="panel-badge">15 Candidates</span>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted);">
+          Click row or <span style="font-weight: 600; color: var(--text-primary);">Inspect</span> for feature evidence breakdown
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table id="predictionsTable">
+          <thead>
+            <tr>
+              <th style="width: 44px;">Rank</th>
+              <th style="width: 140px;">Gateway ID</th>
+              <th style="width: 135px;">Composite Score</th>
+              <th style="width: 110px;">Risk Level</th>
+              <th style="width: 135px;">Category</th>
+              <th style="width: 120px;">Confidence</th>
+              <th>Primary Operational Evidence</th>
+              <th style="width: 145px; text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="predictionsTableBody">
+            <tr>
+              <td colspan="8">
+                <div class="empty-state">
+                  <div class="spinner"></div>
+                  <div>Loading Sentinel decision recommendations...</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 6. Pairwise Decision Contrast ("Why Gateway A Above Gateway B") -->
+    <section class="panel" aria-label="Pairwise Decision Contrast">
+      <div class="panel-header">
+        <div class="panel-title-area">
+          <h2 class="panel-title">Pairwise Decision Justification</h2>
+          <span class="panel-badge">Why #1 Ranked Above #2</span>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted);">
+          Inspect observable feature contrasts and tie-breaking rationale
+        </div>
+      </div>
+
+      <div class="comparison-section">
+        <div class="comparison-controls">
+          <div class="selector-field">
+            <label for="compareSelectA" class="selector-label">Gateway A (Higher Priority):</label>
+            <select id="compareSelectA" class="compare-dropdown"></select>
           </div>
-          <div class="vs-pill">VS</div>
-          <div class="compare-select-wrapper">
-            <label for="compareSelectB" class="control-label">Gateway B (Comparison Candidate):</label>
-            <select id="compareSelectB" class="compare-select"></select>
+          <div class="vs-tag">VS</div>
+          <div class="selector-field">
+            <label for="compareSelectB" class="selector-label">Gateway B (Comparison Candidate):</label>
+            <select id="compareSelectB" class="compare-dropdown"></select>
           </div>
-          <div style="padding-top: 20px;">
+          <div>
             <button type="button" id="compareBtn" class="btn btn-secondary">
               <span>COMPARE DECISIONS</span>
             </button>
@@ -1331,15 +1879,14 @@
         </div>
 
         <div id="comparisonContainer">
-          <!-- Comparison cards and backend reasons populated dynamically -->
-          <div class="empty-state" style="padding: 24px;">
+          <div class="empty-state" style="padding: 18px;">
             Select two gateways above and click "Compare Decisions" to view detailed contrast evidence.
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
 
-    <!-- Architectural Pillar Overview (Evaluator Confidence) -->
+    <!-- 7. Architecture Intelligence Banner -->
     <section class="architecture-banner" aria-label="Sentinel Decision Intelligence Pillars">
       <div class="arch-pillar">
         <span class="pillar-tag">Pillar 1 · Technical Distress</span>
@@ -1353,23 +1900,23 @@
       </div>
       <div class="arch-pillar">
         <span class="pillar-tag">Pillar 3 · Historical Memory</span>
-        <div class="pillar-name">28-Day Baseline & Cumulative Z (F06)</div>
+        <div class="pillar-name">28-Day Baseline &amp; Cumulative Z (F06)</div>
         <div class="pillar-desc">Z-score standardized against 28-day historical baseline per gateway, separating chronic baseline noise from acute operational deterioration.</div>
       </div>
       <div class="arch-pillar">
         <span class="pillar-tag">Pillar 4 · Uncertainty Awareness</span>
-        <div class="pillar-name">Data Confidence & Missingness (F07)</div>
+        <div class="pillar-name">Data Confidence &amp; Missingness (F07)</div>
         <div class="pillar-desc">Cold-start awareness, meter read success rates, and transparent handling of missing telemetry without false certainty.</div>
       </div>
     </section>
   </main>
 
-  <!-- Evidence Detail Modal -->
+  <!-- 8. Evidence Detail Modal (Progressive Disclosure) -->
   <div id="evidenceModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalGatewayId">
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title-group">
-          <span style="font-size: 13px; color: var(--text-muted); font-weight: 700;">GATEWAY EVIDENCE</span>
+          <span style="font-size: 11px; color: var(--text-muted); font-weight: 800; letter-spacing: 0.5px;">GATEWAY EVIDENCE</span>
           <span id="modalGatewayId" class="modal-title">—</span>
           <span id="modalRankBadge" class="panel-badge">Rank #—</span>
           <span id="modalRiskBadge" class="badge">RISK</span>
@@ -1379,29 +1926,29 @@
       </div>
 
       <div class="modal-body">
-        <!-- Primary Reason & Summary -->
+        <!-- Executive Summary & Primary Reason -->
         <div class="evidence-section">
-          <div class="evidence-section-title">Executive Summary</div>
+          <div class="evidence-section-title">Executive Operational Summary</div>
           <div id="modalSummary" class="evidence-summary-box">—</div>
         </div>
 
         <div class="evidence-section">
           <div class="evidence-section-title">Primary Operational Reason</div>
-          <div id="modalPrimaryReason" style="font-size: 13px; color: #38bdf8; font-family: var(--font-mono); background: rgba(14, 165, 233, 0.08); padding: 10px 14px; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.2);">—</div>
+          <div id="modalPrimaryReason" style="font-size: 12px; color: var(--brand-accent); font-family: var(--font-mono); background: var(--brand-accent-subtle); padding: 8px 11px; border-radius: 4px; border: 1px solid var(--brand-accent-border);">—</div>
         </div>
 
         <!-- Structured Feature Contributions -->
         <div class="evidence-section">
-          <div class="evidence-section-title">Feature Contributions & Normalization Baselines</div>
-          <div class="table-responsive">
+          <div class="evidence-section-title">Feature Contributions &amp; Observable Distress Signals</div>
+          <div style="overflow-x: auto;">
             <table class="contributions-table">
               <thead>
                 <tr>
-                  <th style="width: 70px;">Code</th>
+                  <th style="width: 55px;">Code</th>
                   <th>Feature Name</th>
                   <th style="width: 170px;">Measured Value</th>
                   <th style="width: 110px;">Severity</th>
-                  <th style="width: 90px;">Active</th>
+                  <th style="width: 80px;">Active</th>
                 </tr>
               </thead>
               <tbody id="modalContributionsBody">
@@ -1413,28 +1960,36 @@
 
         <!-- Operational Warnings -->
         <div id="modalWarningsWrapper" class="evidence-section" style="display: none;">
-          <div class="evidence-section-title" style="color: #fca5a5;">Operational Warnings</div>
+          <div class="evidence-section-title" style="color: var(--risk-critical-dot);">Operational Warnings</div>
           <div id="modalWarnings" class="warning-box"></div>
         </div>
 
         <!-- Limitations & Uncertainties -->
         <div id="modalLimitationsWrapper" class="evidence-section" style="display: none;">
-          <div class="evidence-section-title">Decision Limitations & Cold Start Context</div>
+          <div class="evidence-section-title">Decision Limitations &amp; Cold Start Context</div>
           <div id="modalLimitations" class="limitation-box"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- System Footer -->
-  <footer>
-    <div>
-      <strong>SENTINEL</strong> Decision Intelligence Engine · NEXORA 2026
-    </div>
-    <div class="footer-links">
-      <a href="/swagger-ui.html" target="_blank" class="footer-link">Swagger OpenAPI</a>
-      <a href="/v3/api-docs" target="_blank" class="footer-link">API Specification</a>
-      <a href="/actuator/health" target="_blank" class="footer-link">System Health</a>
+  <!-- 9. Minimal Enterprise SaaS Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <strong>SENTINEL</strong>
+        <span class="footer-dot">·</span>
+        <span>Gateway Reliability &amp; Field Planning</span>
+      </div>
+      <div class="footer-meta">
+        <span>Risk-Based Decision Engine</span>
+        <span class="footer-dot">·</span>
+        <span>Data-driven</span>
+        <span class="footer-dot">·</span>
+        <span>Deterministic</span>
+        <span class="footer-dot">·</span>
+        <span>Auditable</span>
+      </div>
     </div>
   </footer>
 
@@ -1449,7 +2004,8 @@
         predictionsData: null,
         selectedGatewayId: null,
         comparisonData: null,
-        isLoading: false
+        isLoading: false,
+        theme: 'light'
       };
 
       // ── DOM References ────────────────────────────────────────────
@@ -1468,17 +2024,50 @@
         healthPill: document.getElementById('healthPill'),
         strategyPill: document.getElementById('strategyPill'),
         timestampPill: document.getElementById('timestampPill'),
+        themeToggleBtn: document.getElementById('themeToggleBtn'),
+        themeToggleIcon: document.getElementById('themeToggleIcon'),
+        themeToggleLabel: document.getElementById('themeToggleLabel'),
+        methodologyToggleBtn: document.getElementById('methodologyToggleBtn'),
+        methodologyDisclosure: document.getElementById('methodologyDisclosure'),
+        
+        // Hero / Command Bar elements
+        heroVisitCount: document.getElementById('heroVisitCount'),
+        heroWeekLabel: document.getElementById('heroWeekLabel'),
+        heroCapacity: document.getElementById('heroCapacity'),
+        heroStrategy: document.getElementById('heroStrategy'),
+        heroHealth: document.getElementById('heroHealth'),
+
+        // Top #1 Gateway card
+        topGwRank: document.getElementById('topGwRank'),
+        topGwId: document.getElementById('topGwId'),
+        topGwScore: document.getElementById('topGwScore'),
+        topGwRisk: document.getElementById('topGwRisk'),
+        topGwCategory: document.getElementById('topGwCategory'),
+        topGwConfidence: document.getElementById('topGwConfidence'),
+        topGwSignals: document.getElementById('topGwSignals'),
+        topGwInspectBtn: document.getElementById('topGwInspectBtn'),
+        topGwWeekTag: document.getElementById('topGwWeekTag'),
+        topGwSummarySnippet: document.getElementById('topGwSummarySnippet'),
+
+        // KPI cards
         metricSelected: document.getElementById('metricSelected'),
         metricCritical: document.getElementById('metricCritical'),
-        metricHigh: document.getElementById('metricHigh'),
-        metricMedium: document.getElementById('metricMedium'),
+        metricHighModerate: document.getElementById('metricHighModerate'),
+        metricMeters: document.getElementById('metricMeters'),
+        metricTopScore: document.getElementById('metricTopScore'),
         metricWeekLabel: document.getElementById('metricWeekLabel'),
+
+        // Table
         tableBody: document.getElementById('predictionsTableBody'),
         tableCapacityBadge: document.getElementById('tableCapacityBadge'),
+
+        // Pairwise comparison
         compareSelectA: document.getElementById('compareSelectA'),
         compareSelectB: document.getElementById('compareSelectB'),
         compareBtn: document.getElementById('compareBtn'),
         comparisonContainer: document.getElementById('comparisonContainer'),
+
+        // Modal
         evidenceModal: document.getElementById('evidenceModal'),
         modalCloseBtn: document.getElementById('modalCloseBtn'),
         modalGatewayId: document.getElementById('modalGatewayId'),
@@ -1496,12 +2085,50 @@
 
       // ── Initialization ────────────────────────────────────────────
       function init() {
+        initTheme();
         bindEvents();
         checkHealth();
         loadPredictions(state.currentWeek);
       }
 
+      // Theme Management
+      function initTheme() {
+        const saved = localStorage.getItem('sentinel_theme');
+        state.theme = (saved === 'dark') ? 'dark' : 'light';
+        applyTheme(state.theme);
+      }
+
+      function applyTheme(theme) {
+        state.theme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('sentinel_theme', theme);
+        if (dom.themeToggleLabel) {
+          dom.themeToggleLabel.textContent = theme === 'dark' ? 'Dark' : 'Light';
+        }
+        if (dom.themeToggleIcon) {
+          dom.themeToggleIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+        }
+      }
+
+      function toggleTheme() {
+        const nextTheme = state.theme === 'dark' ? 'light' : 'dark';
+        applyTheme(nextTheme);
+      }
+
       function bindEvents() {
+        if (dom.themeToggleBtn) {
+          dom.themeToggleBtn.addEventListener('click', toggleTheme);
+        }
+
+        if (dom.methodologyToggleBtn && dom.methodologyDisclosure) {
+          dom.methodologyToggleBtn.addEventListener('click', () => {
+            const isHidden = dom.methodologyDisclosure.style.display === 'none' || !dom.methodologyDisclosure.style.display;
+            dom.methodologyDisclosure.style.display = isHidden ? 'block' : 'none';
+            dom.methodologyToggleBtn.innerHTML = isHidden ? '⚙️ How Sentinel Prioritizes ▲' : '⚙️ How Sentinel Prioritizes ▼';
+            dom.methodologyToggleBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+          });
+        }
+
         dom.loadBtn.addEventListener('click', () => {
           const raw = dom.weekInput.value.trim();
           if (raw) {
@@ -1544,6 +2171,12 @@
           if (e.key === 'Escape') closeModal();
         });
 
+        // Top Gateway card Inspect button
+        dom.topGwInspectBtn.addEventListener('click', () => {
+          const gwId = dom.topGwInspectBtn.getAttribute('data-gwid');
+          if (gwId) inspectGateway(gwId);
+        });
+
         // Event delegation for table action buttons and row clicks
         dom.tableBody.addEventListener('click', (e) => {
           const btn = e.target.closest('button[data-action]');
@@ -1577,18 +2210,22 @@
             const data = await res.json();
             if (data.status === 'UP') {
               dom.healthPill.className = 'status-pill healthy';
-              dom.healthPill.innerHTML = '<span style="font-size: 8px;">●</span> SYSTEM HEALTHY';
+              dom.healthPill.innerHTML = '<span style="font-size: 7px;">●</span> SYSTEM HEALTHY';
+              if (dom.heroHealth) dom.heroHealth.textContent = 'ONLINE · UP';
             } else {
               dom.healthPill.className = 'status-pill unhealthy';
-              dom.healthPill.innerHTML = '<span style="font-size: 8px;">●</span> SYSTEM STANDBY';
+              dom.healthPill.innerHTML = '<span style="font-size: 7px;">●</span> SYSTEM STANDBY';
+              if (dom.heroHealth) dom.heroHealth.textContent = 'STANDBY';
             }
           } else {
             dom.healthPill.className = 'status-pill unhealthy';
-            dom.healthPill.innerHTML = '<span style="font-size: 8px;">●</span> SYSTEM DOWN';
+            dom.healthPill.innerHTML = '<span style="font-size: 7px;">●</span> SYSTEM DOWN';
+            if (dom.heroHealth) dom.heroHealth.textContent = 'DOWN';
           }
         } catch (e) {
           dom.healthPill.className = 'status-pill unhealthy';
-          dom.healthPill.innerHTML = '<span style="font-size: 8px;">●</span> DISCONNECTED';
+          dom.healthPill.innerHTML = '<span style="font-size: 7px;">●</span> DISCONNECTED';
+          if (dom.heroHealth) dom.heroHealth.textContent = 'DISCONNECTED';
         }
       }
 
@@ -1698,6 +2335,7 @@
 
       function renderPredictions(data) {
         const predictions = data.predictions || [];
+        const week = data.week_start || state.currentWeek;
 
         // Update Header & Summary Pills
         dom.strategyPill.textContent = `STRATEGY: ${data.ranking_method || 'RISK_BASED'}`;
@@ -1707,23 +2345,43 @@
         }
         dom.tableCapacityBadge.textContent = `${data.total_selected || predictions.length} of ${data.capacity || 15} Selected`;
 
+        // Update Hero Field Decision Elements
+        dom.heroVisitCount.textContent = data.total_selected || predictions.length;
+        dom.heroWeekLabel.textContent = week;
+        dom.heroCapacity.textContent = `${data.total_selected || predictions.length} / ${data.capacity || 15} VISITS`;
+        dom.heroStrategy.textContent = data.ranking_method || 'RISK_BASED';
+
         // Update Executive KPI Metrics
         dom.metricSelected.textContent = data.total_selected || predictions.length;
-        
+        dom.metricWeekLabel.textContent = week;
+
         let criticalCount = 0;
         let highCount = 0;
         let moderateCount = 0;
+        let totalMeters = 0;
+        let metersFound = false;
 
         predictions.forEach(p => {
           if (p.risk_level === 'CRITICAL') criticalCount++;
           else if (p.risk_level === 'HIGH') highCount++;
           else if (p.risk_level === 'MODERATE' || p.risk_level === 'MEDIUM') moderateCount++;
+
+          if (p.reason) {
+            const m = p.reason.match(/(\d+)\s+meters/i);
+            if (m) {
+              totalMeters += parseInt(m[1], 10);
+              metersFound = true;
+            }
+          }
         });
 
         dom.metricCritical.textContent = criticalCount;
-        dom.metricHigh.textContent = highCount;
-        dom.metricMedium.textContent = moderateCount;
-        dom.metricWeekLabel.textContent = data.week_start || state.currentWeek;
+        dom.metricHighModerate.textContent = `${highCount + moderateCount}`;
+        dom.metricMeters.textContent = metersFound ? totalMeters.toLocaleString() : '—';
+        dom.metricTopScore.textContent = predictions.length > 0 ? Number(predictions[0].score).toFixed(2) : '—';
+
+        // Render Top Decision (#1 Gateway) Card
+        renderTopDecisionCard(predictions[0], week);
 
         // Render Table Rows
         if (predictions.length === 0) {
@@ -1752,15 +2410,15 @@
               <span class="gateway-id">${escapeHtml(p.gateway_id)}</span>
             </td>
             <td>
-              <div class="score-container">
-                <span class="score-number">${Number(p.score).toFixed(2)}</span>
-                <div class="score-bar-track">
-                  <div class="score-bar-fill" style="width: ${barWidth}%;"></div>
+              <div class="score-box">
+                <span class="score-value">${Number(p.score).toFixed(2)}</span>
+                <div class="score-bar-bg">
+                  <div class="score-bar-value" style="width: ${barWidth}%;"></div>
                 </div>
               </div>
             </td>
             <td>
-              <span class="badge ${riskBadgeClass}">${escapeHtml(p.risk_level || 'UNKNOWN')}</span>
+              <span class="badge ${riskBadgeClass}"><span class="badge-dot"></span>${escapeHtml(p.risk_level || 'UNKNOWN')}</span>
             </td>
             <td>
               <span class="badge category ${catBadgeClass}">${escapeHtml(p.decision_category || 'NOMINAL')}</span>
@@ -1772,14 +2430,83 @@
               <div class="reason-text" title="${escapeHtml(p.reason || '')}">${escapeHtml(p.reason || '—')}</div>
             </td>
             <td style="text-align: right;">
-              <div class="action-buttons" style="justify-content: flex-end;">
-                <button type="button" class="btn-tbl" data-action="inspect" data-gwid="${escapeHtml(p.gateway_id)}">Inspect</button>
+              <div class="action-group">
+                <button type="button" class="btn-tbl primary" data-action="inspect" data-gwid="${escapeHtml(p.gateway_id)}">Inspect</button>
                 <button type="button" class="btn-tbl" data-action="compare" data-gwid="${escapeHtml(p.gateway_id)}">Compare</button>
               </div>
             </td>
           `;
 
           dom.tableBody.appendChild(tr);
+        });
+      }
+
+      function renderTopDecisionCard(gw1, week) {
+        if (!gw1) {
+          dom.topGwId.textContent = 'No Prediction Available';
+          dom.topGwScore.textContent = '—';
+          dom.topGwSignals.innerHTML = '<span class="signal-chip">No telemetry signals</span>';
+          dom.topGwInspectBtn.style.display = 'none';
+          return;
+        }
+
+        dom.topGwRank.textContent = '#' + gw1.rank;
+        dom.topGwId.textContent = gw1.gateway_id;
+        dom.topGwScore.textContent = Number(gw1.score).toFixed(2);
+        dom.topGwWeekTag.textContent = `Week ${week}`;
+
+        dom.topGwRisk.className = `badge ${getRiskBadgeClass(gw1.risk_level)}`;
+        dom.topGwRisk.innerHTML = `<span class="badge-dot"></span>${escapeHtml(gw1.risk_level || 'UNKNOWN')}`;
+
+        dom.topGwCategory.className = `badge category ${getCategoryBadgeClass(gw1.decision_category)}`;
+        dom.topGwCategory.textContent = gw1.decision_category || 'NOMINAL';
+
+        dom.topGwConfidence.className = `badge ${getConfidenceBadgeClass(gw1.confidence)}`;
+        dom.topGwConfidence.textContent = (gw1.confidence === gw1.decision_category) 
+          ? `CONF: ${gw1.confidence}` 
+          : (gw1.confidence || 'FULL');
+
+        dom.topGwInspectBtn.setAttribute('data-gwid', gw1.gateway_id);
+        dom.topGwInspectBtn.style.display = 'inline-flex';
+
+        // Parse and render observable signals from API reason text
+        renderTopGatewaySignals(gw1.reason);
+      }
+
+      function renderTopGatewaySignals(reasonText) {
+        dom.topGwSignals.innerHTML = '';
+        if (!reasonText) {
+          dom.topGwSignals.innerHTML = '<span class="signal-chip">Primary operational distress</span>';
+          return;
+        }
+
+        // Split on semicolons or period delimiters for clean chips
+        const segments = reasonText.split(/[;.]/).map(s => s.trim()).filter(Boolean);
+        if (segments.length === 0) {
+          const chip = document.createElement('span');
+          chip.className = 'signal-chip';
+          chip.textContent = reasonText;
+          dom.topGwSignals.appendChild(chip);
+          return;
+        }
+
+        segments.forEach(seg => {
+          const chip = document.createElement('span');
+          chip.className = 'signal-chip';
+          
+          if (/outage|offline|reboot|distress|missing/i.test(seg)) {
+            chip.classList.add('accent');
+            chip.innerHTML = `<span style="font-size: 10px;">⚡</span> ${escapeHtml(seg)}`;
+          } else if (/meters/i.test(seg)) {
+            chip.classList.add('meters');
+            chip.innerHTML = `<span style="font-size: 10px;">👥</span> ${escapeHtml(seg)}`;
+          } else if (/accelerating|worsening|deteriorating/i.test(seg)) {
+            chip.classList.add('accent');
+            chip.innerHTML = `<span style="font-size: 10px;">📈</span> ${escapeHtml(seg)}`;
+          } else {
+            chip.textContent = seg;
+          }
+          dom.topGwSignals.appendChild(chip);
         });
       }
 
@@ -1819,7 +2546,7 @@
         let proximityHtml = '';
         if (report.score_proximity_warning) {
           proximityHtml = `
-            <div class="proximity-warning">
+            <div class="proximity-alert">
               <span style="font-weight: 700;">⚠️ Score Proximity Notice:</span>
               <span>Scores are within close margin (< 5.0). Order is decided by explicit tie-breaking rules and confidence priority.</span>
             </div>
@@ -1827,49 +2554,49 @@
         }
 
         const reasonsHtml = (report.reasons || []).map(r => `
-          <li class="compare-reason-item">${escapeHtml(r)}</li>
+          <li class="reason-bullet">${escapeHtml(r)}</li>
         `).join('');
 
         dom.comparisonContainer.innerHTML = `
-          <div class="comparison-report-card">
+          <div class="comparison-card">
             ${proximityHtml}
 
-            <div class="comparison-cards-row">
-              <div class="compare-side-card ${isAWinner ? 'winner' : ''}">
-                <div class="side-card-header">
-                  <span class="gateway-id" style="font-size: 14px;">${escapeHtml(gwA)}</span>
-                  ${isAWinner ? '<span class="badge badge-primary" style="background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4);">RANKED HIGHER</span>' : ''}
+            <div class="contrast-columns">
+              <div class="side-card ${isAWinner ? 'winner' : ''}">
+                <div class="side-header">
+                  <span class="gateway-id">${escapeHtml(gwA)}</span>
+                  ${isAWinner ? '<span class="badge" style="background: var(--brand-accent-subtle); color: var(--brand-accent); border: 1px solid var(--brand-accent-border);">RANKED HIGHER</span>' : ''}
                 </div>
                 ${itemA ? `
-                  <div style="font-size: 12px; color: var(--text-secondary); display: flex; gap: 10px; margin-top: 4px;">
+                  <div style="font-size: 11.5px; color: var(--text-secondary); display: flex; gap: 8px; margin-top: 4px;">
                     <span>Rank: <strong>#${itemA.rank}</strong></span>
                     <span>Score: <strong>${itemA.score.toFixed(2)}</strong></span>
-                    <span>Risk: <strong>${itemA.risk_level}</strong></span>
+                    <span>Risk: <strong>${escapeHtml(itemA.risk_level)}</strong></span>
                   </div>
                   <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">${escapeHtml(itemA.reason)}</div>
                 ` : ''}
               </div>
 
-              <div class="compare-side-card ${!isAWinner ? 'winner' : ''}">
-                <div class="side-card-header">
-                  <span class="gateway-id" style="font-size: 14px;">${escapeHtml(gwB)}</span>
-                  ${!isAWinner ? '<span class="badge badge-primary" style="background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4);">RANKED HIGHER</span>' : ''}
+              <div class="side-card ${!isAWinner ? 'winner' : ''}">
+                <div class="side-header">
+                  <span class="gateway-id">${escapeHtml(gwB)}</span>
+                  ${!isAWinner ? '<span class="badge" style="background: var(--brand-accent-subtle); color: var(--brand-accent); border: 1px solid var(--brand-accent-border);">RANKED HIGHER</span>' : ''}
                 </div>
                 ${itemB ? `
-                  <div style="font-size: 12px; color: var(--text-secondary); display: flex; gap: 10px; margin-top: 4px;">
+                  <div style="font-size: 11.5px; color: var(--text-secondary); display: flex; gap: 8px; margin-top: 4px;">
                     <span>Rank: <strong>#${itemB.rank}</strong></span>
                     <span>Score: <strong>${itemB.score.toFixed(2)}</strong></span>
-                    <span>Risk: <strong>${itemB.risk_level}</strong></span>
+                    <span>Risk: <strong>${escapeHtml(itemB.risk_level)}</strong></span>
                   </div>
                   <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">${escapeHtml(itemB.reason)}</div>
                 ` : ''}
               </div>
             </div>
 
-            <div style="margin-top: 10px;">
-              <div class="evidence-section-title" style="margin-bottom: 8px;">Decision Contrast Evidence (${report.higher_gateway_id} over ${report.lower_gateway_id}):</div>
-              <ul class="compare-reason-list">
-                ${reasonsHtml || '<li class="compare-reason-item">No contrast factors reported by engine.</li>'}
+            <div style="margin-top: 4px;">
+              <div class="evidence-section-title" style="margin-bottom: 6px;">Decision Contrast Evidence (${escapeHtml(report.higher_gateway_id)} over ${escapeHtml(report.lower_gateway_id)}):</div>
+              <ul class="reasons-list">
+                ${reasonsHtml || '<li class="reason-bullet">No contrast factors reported by engine.</li>'}
               </ul>
             </div>
           </div>
@@ -1882,7 +2609,7 @@
         
         // Badges
         dom.modalRiskBadge.className = `badge ${getRiskBadgeClass(explanation.risk_level)}`;
-        dom.modalRiskBadge.textContent = explanation.risk_level || 'UNKNOWN';
+        dom.modalRiskBadge.innerHTML = `<span class="badge-dot"></span>${escapeHtml(explanation.risk_level || 'UNKNOWN')}`;
 
         dom.modalConfidenceBadge.className = `badge ${getConfidenceBadgeClass(explanation.confidence)}`;
         dom.modalConfidenceBadge.textContent = explanation.confidence || 'FULL';
@@ -1891,22 +2618,39 @@
         dom.modalPrimaryReason.textContent = explanation.primary_reason || '—';
         dom.modalSummary.textContent = explanation.summary || '—';
 
-        // Contributions Table
+        // Contributions Table with Visual Elements
         dom.modalContributionsBody.innerHTML = '';
         (explanation.feature_contributions || []).forEach(fc => {
           const tr = document.createElement('tr');
-          const isExtreme = fc.severity === 'EXTREME' || fc.severity === 'SEVERE';
-          const sevColor = isExtreme ? '#f87171' : fc.severity === 'ELEVATED' ? '#fb923c' : 'var(--text-secondary)';
+          const isExtreme = fc.severity === 'EXTREME' || fc.severity === 'SEVERE' || fc.severity === 'CRITICAL';
+          const sevColor = isExtreme ? 'var(--risk-critical-dot)' : (fc.severity === 'ELEVATED' || fc.severity === 'HIGH') ? 'var(--risk-high-dot)' : (fc.severity === 'MODERATE') ? 'var(--risk-moderate-dot)' : 'var(--text-secondary)';
+
+          // Visual bar calculation for F01, F02, F03 (max 168h in a week)
+          let visualBarHtml = '';
+          const numMatch = (fc.value || '').match(/(\d+(\.\d+)?)/);
+          if (numMatch) {
+            const valNum = parseFloat(numMatch[1]);
+            if (fc.feature_code === 'F01' || fc.feature_code === 'F02' || fc.feature_code === 'F03') {
+              const pct = Math.min(100, Math.round((valNum / 168) * 100));
+              visualBarHtml = `<div class="feat-bar-track" title="${pct}% of week"><div class="feat-bar-fill" style="width: ${pct}%; background: ${sevColor};"></div></div>`;
+            } else if (fc.feature_code === 'F04') {
+              const arrow = valNum > 1.2 ? '↗ (Accelerating)' : valNum < 0.8 ? '↘ (Recovering)' : '→ (Stable)';
+              visualBarHtml = ` <span style="font-size: 11px; color: ${sevColor}; font-weight: 700;">${arrow}</span>`;
+            }
+          }
 
           tr.innerHTML = `
-            <td style="font-family: var(--font-mono); font-weight: 700; color: #38bdf8;">${escapeHtml(fc.feature_code)}</td>
-            <td style="font-weight: 600; color: #f1f5f9;">${escapeHtml(fc.feature_name)}</td>
-            <td style="font-family: var(--font-mono); color: #ffffff;">${escapeHtml(fc.value || '—')}</td>
-            <td style="font-weight: 600; color: ${sevColor};">${escapeHtml(fc.severity || 'NOMINAL')}</td>
+            <td style="font-family: var(--font-mono); font-weight: 700; color: var(--brand-accent);">${escapeHtml(fc.feature_code)}</td>
+            <td style="font-weight: 600; color: var(--text-primary);">${escapeHtml(fc.feature_name)}</td>
+            <td style="font-family: var(--font-mono); color: var(--text-primary);">
+              <span>${escapeHtml(fc.value || '—')}</span>
+              ${visualBarHtml}
+            </td>
+            <td style="font-weight: 700; color: ${sevColor};">${escapeHtml(fc.severity || 'NOMINAL')}</td>
             <td>
               ${fc.active 
-                ? '<span class="badge" style="background: rgba(14, 165, 233, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);">ACTIVE</span>' 
-                : '<span class="badge" style="background: rgba(148, 163, 184, 0.1); color: var(--text-muted); border: 1px solid var(--border-subtle);">NOMINAL</span>'}
+                ? '<span class="badge" style="background: var(--brand-accent-subtle); color: var(--brand-accent); border: 1px solid var(--brand-accent-border);">ACTIVE</span>' 
+                : '<span class="badge" style="background: var(--bg-subtle); color: var(--text-muted); border: 1px solid var(--border-light);">NOMINAL</span>'}
             </td>
           `;
           dom.modalContributionsBody.appendChild(tr);
@@ -2020,10 +2764,10 @@
           case 'CRITICAL': return 'risk-critical';
           case 'HIGH': return 'risk-high';
           case 'MODERATE':
-          case 'MEDIUM': return 'risk-medium';
+          case 'MEDIUM': return 'risk-moderate';
           case 'LOW': return 'risk-low';
           case 'NONE': return 'risk-low';
-          default: return 'risk-medium';
+          default: return 'risk-moderate';
         }
       }
 
@@ -2067,6 +2811,7 @@
       // Expose helpers for external/debug access
       window.sentinelInspect = inspectGateway;
       window.sentinelSelectCompare = selectCompareGateway;
+      window.sentinelToggleTheme = toggleTheme;
 
       // Run on DOM ready
       if (document.readyState === 'loading') {
