@@ -58,4 +58,11 @@ class DashboardStaticResourceIntegrationTest {
                 .andExpect(content().string(containsString("predictionsTable")))
                 .andExpect(content().string(containsString("evidenceModal")));
     }
+
+    @Test
+    @DisplayName("GET /favicon.ico returns 200 OK and serves the local favicon")
+    void getFavicon_returnsOk() throws Exception {
+        mockMvc.perform(get("/favicon.ico"))
+                .andExpect(status().isOk());
+    }
 }
