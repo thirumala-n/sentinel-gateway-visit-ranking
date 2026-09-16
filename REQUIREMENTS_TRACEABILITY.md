@@ -30,7 +30,7 @@ This document maps challenge requirements to their implementation status.
 | NF-07 | API documentation (OpenAPI)                    | ✅ Done      | `springdoc-openapi`               |
 | NF-08 | Code formatting (Spotless)                     | ✅ Done      | `pom.xml` Spotless plugin         |
 | NF-09 | CI pipeline                                    | ✅ Done      | `.github/workflows/ci.yml`        |
-| NF-10 | Automated tests                                | ✅ Done      | 200 automated tests (Unit, E2E, ArchUnit, Rerun) |
+| NF-10 | Automated tests                                | ✅ Done      | 213 automated tests (Unit, E2E, ArchUnit, Rerun) |
 
 ## Documentation Requirements
 
@@ -42,7 +42,7 @@ This document maps challenge requirements to their implementation status.
 | DR-04 | AI usage disclosure                            | ✅ Done      | `AI-USAGE.md`                     |
 | DR-05 | Requirements traceability                      | ✅ Done      | `REQUIREMENTS_TRACEABILITY.md`    |
 | DR-06 | API examples                                   | ✅ Done      | `docs/api-examples.http`          |
-| DR-07 | Historical backtesting                         | ✅ Done      | `BACKTESTING.md`                  |
+| DR-07 | Historical backtesting                         | ✅ Done      | `docs/BACKTESTING.md`             |
 
 ---
 

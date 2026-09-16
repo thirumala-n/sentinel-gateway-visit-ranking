@@ -79,4 +79,4 @@ All AI outputs were subjected to rigorous human staff-level engineering oversigh
 1. **Core Algorithm Ownership:** The mathematical formulation of the staged ranking strategy ($R_{\text{tech}}$ additive core, logarithmic impact multiplier $M_{\text{impact}}$, $\sigma_{\min}$ variance floors) was directed and validated by human judgement based on field economics.
 2. **Economic Tradeoffs:** The distinction between official competition scoring (€380 / €600 per gateway) and internal operational meter weighting was formulated by human review.
 3. **Temporal Anti-Leakage:** Human adversarial audits verified that zero observations timestamped $\ge T_{\text{target}}$ could be accessed during scoring.
-4. **Code Quality:** All 200 automated tests, ArchUnit rules, Spotless formatting, and RFC-7807 error responses were executed and verified against real dataset files.
+4. **Code Quality:** All 213 automated tests, ArchUnit rules, Spotless formatting, and RFC-7807 error responses were executed and verified against real dataset files.
