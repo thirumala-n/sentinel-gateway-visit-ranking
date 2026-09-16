@@ -3,6 +3,8 @@
 > **NEXORA 2026 Innovation Challenge** · Selected Track: **Software Development (60%)**  
 > *Deterministic, cost-sensitive weekly field visit decision system for smart utility grids.*
 
+🎥 [NEXORA 2026 – Project Demonstration / Screen Recording](https://drive.google.com/file/d/1_wsdJ3N5gepyuffmrITlrhwR7zZtgJXW/view?usp=sharing)
+
 ---
 
 ## Quick Start (Run in Under 60 Seconds)
@@ -134,14 +136,10 @@ Rather than decorative charts or generic dashboard plots, Sentinel uses high-den
 
 ---
 
-## Screen Recording & Resume Placeholders
+## Resume Attachment
 
-> **Submission Video Link:**  
-> `[RECORDING PLACEHOLDER: https://youtu.be/EXAMPLE_NEXORA_SENTINEL_2026]`  
-> *(Manual submission action: Record a 6–8 minute screencast demonstrating clean startup, API execution, dynamic partition rerun without restart, explainability, and the operator decision console).*
->
 > **Resume Attachment:**  
-> Place your `<Registration_Id>.pdf` at the repository root before submitting.
+> Candidate resume is attached at repository root: [`23091A05P7.pdf`](./23091A05P7.pdf).
 
 ---
 
