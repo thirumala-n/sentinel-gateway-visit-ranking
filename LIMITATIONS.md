@@ -34,6 +34,7 @@ In field operations, data telemetry provides strong evidence but cannot capture 
 - **Single-node DuckDB engine:** DuckDB is an in-process analytical OLAP engine. It is optimized for single-machine execution and does not support distributed clustering across multiple physical nodes.
 - **Batch-oriented execution:** Features and baseline statistics are computed on weekly batch boundaries (every Monday 00:00 UTC), not in continuous streaming millisecond intervals.
 - **Read-only input contract:** Sentinel strictly reads parquet telemetry and CSV files from `./data` and never mutates source datasets.
+- **Duplicate gateway-hour telemetry handling:** Ingestion queries group records by `(gateway_id, ts_utc)` using `MAX()` aggregation, intentionally selecting worst-case outage and reboot severity when duplicate telemetry rows occur for the same gateway hour.
 - **No online weight adaptation:** Fixed engineering weights are evaluated via walk-forward historical backtesting; the service does not alter scoring weights dynamically in production without explicit configuration changes.
 
 ### Explainability Constraints

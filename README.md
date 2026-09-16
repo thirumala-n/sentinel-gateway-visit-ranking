@@ -43,6 +43,14 @@ Per official NEXORA competition rules:
 java -jar target/sentinel-0.0.1-SNAPSHOT.jar
 ```
 
+*Custom Data Directory (`--data`):*
+Sentinel defaults to `./data` but accepts an alternate directory via `--data`:
+```bash
+java -jar target/sentinel-0.0.1-SNAPSHOT.jar --data /path/to/data
+# or with equals syntax:
+java -jar target/sentinel-0.0.1-SNAPSHOT.jar --data=/path/to/data
+```
+
 ### 3. Verify System Health & Call the API
 ```bash
 # Health & Readiness Check
@@ -93,7 +101,7 @@ Sentinel is deliberately engineered for **zero infrastructure footprint**, **hig
 | **Data & Analytics** | **DuckDB 1.5.5.1** (embedded in-process), **Apache Parquet**, **Apache Commons CSV 1.14.1**, **Apache POI 5.5.1** | Vectorized SQL queries executed directly over partitioned disk Parquet files without external DBMS; tabular export for `predictions.csv`; Excel ingestion for historical engineer reviews. |
 | **Architecture & Patterns** | **Ports & Adapters (Hexagonal Architecture)**, Strategy Pattern (`RankingStrategy`), Immutable Domain Models (`RankingContext`, `GatewayPrediction`) | Strict layer decoupling enforced by ArchUnit; hot-swappable ranking engines without API layer changes; deterministic tie-breaking comparator. |
 | **Frontend Console** | **HTML5**, **CSS3**, **Vanilla JavaScript** (ES6+), Spring Boot Static Resource Serving | Zero-build operator dashboard (`src/main/resources/static/index.html`) served directly by Spring Boot; 100% offline with **zero Node.js/npm dependencies** and **zero external CDN links**. |
-| **Testing & Quality** | **JUnit 5**, **AssertJ**, **Mockito**, **Spring Boot Test / MockMvc**, **ArchUnit 1.5.0**, **Spotless 3.10.2** | 213 automated test executions (193 distinct test definitions across 28 test classes, including 5 ArchUnit rules and repeated determinism runs). |
+| **Testing & Quality** | **JUnit 5**, **AssertJ**, **Mockito**, **Spring Boot Test / MockMvc**, **ArchUnit 1.5.0**, **Spotless 3.10.2** | 215 automated test executions (195 distinct test definitions across 29 test classes, including 5 ArchUnit rules and repeated determinism runs). |
 | **DevOps & Packaging** | **Maven Wrapper (`mvnw`)**, **Docker / Dockerfile**, **Docker Compose (`compose.yaml`)**, **GitHub Actions (`ci.yml`)** | Single-command reproducible build and execution; multi-stage non-root container deployment; automated CI build verification. |
 
 ### Deliberate Architectural Simplicity
@@ -365,8 +373,8 @@ Sentinel enforces comprehensive automated test verification:
 ./mvnw spotless:apply
 ```
 
-### Verified Test Suite (213 Tests, 0 Failures, 0 Errors)
-- **Execution Truth:** 213 automated test executions across 28 test classes (193 distinct test definitions, including 5 ArchUnit rules and 25 repeated determinism test runs).
+### Verified Test Suite (215 Tests, 0 Failures, 0 Errors)
+- **Execution Truth:** 215 automated test executions across 29 test classes (195 distinct test definitions, including 5 ArchUnit rules and 25 repeated determinism test runs).
 - **Unit Tests:** Individual feature computers ($F_{01}–F_{06}$), statistical calculations, score scaling, comparators, parsers.
 - **Integration Tests:** DuckDB parquet reader, CSV exporter, REST API MockMvc controllers, static resource & favicon serving.
 - **End-to-End Tests (`PredictionApiE2EIntegrationTest`):** Full-path execution against real DuckDB parquet telemetry.
@@ -442,5 +450,5 @@ sentinel/
 │   │   └── resources/
 │   │       ├── application.yml           # Externalized configuration properties
 │   │       └── static/index.html         # Single-file Operator Decision Console
-│   └── test/                             # 213 automated tests (Unit, E2E, ArchUnit)
+│   └── test/                             # 215 automated tests (Unit, E2E, ArchUnit)
 ```

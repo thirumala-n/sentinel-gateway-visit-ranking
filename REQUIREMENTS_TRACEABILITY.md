@@ -30,7 +30,7 @@ This document maps challenge requirements to their implementation status.
 | NF-07 | API documentation (OpenAPI)                    | ✅ Done      | `springdoc-openapi`               |
 | NF-08 | Code formatting (Spotless)                     | ✅ Done      | `pom.xml` Spotless plugin         |
 | NF-09 | CI pipeline                                    | ✅ Done      | `.github/workflows/ci.yml`        |
-| NF-10 | Automated tests                                | ✅ Done      | 213 automated tests (Unit, E2E, ArchUnit, Rerun) |
+| NF-10 | Automated tests                                | ✅ Done      | 215 automated tests (Unit, E2E, ArchUnit, Rerun) |
 
 ## Documentation Requirements
 

@@ -252,6 +252,7 @@ Nothing. Idempotency is a mandatory software engineering requirement.
 ### Decision
 Implement a hexagonal (ports & adapters) architecture where DuckDB dynamically evaluates filesystem globs (`data/telemetry/*/*.parquet`) at query execution time, coupled with a per-week in-memory cache evicted on `POST /api/v1/predictions/{week}/rerun`.
 The rerun endpoint recomputes predictions specifically for the targeted week by evicting its cache entry and re-executing DuckDB queries directly against `./data`.
+Telemetry ingestion queries group records by `(gateway_id, ts_utc)` using `MAX()` aggregation, intentionally selecting worst-case outage and reboot severity to handle duplicate gateway-hour records deterministically.
 
 ### Why We Chose It
 1. **Per-Week vs All-Weeks Scope**: Target-week rerun was chosen deliberately because field dispatch operations operate on an explicit weekly horizon ($T_{\text{target}}$). Recomputing only the active decision week provides instantaneous response times (<1.5s) during live evaluator interaction, avoids blocking the server with unrequested historical weeks, and provides clean temporal isolation.
@@ -282,7 +283,7 @@ If dataset volume exceeded single-machine storage capacity (e.g. >10 TB), requir
 ## Decision 10: Selected Part 2 Specialization — Why Software Development (60%)
 
 ### Decision
-Select **Software Development** as our primary Part 2 evaluation area (60% weight), optimizing for robust architecture, test coverage (213 automated tests, ArchUnit, E2E), clean strategy substitution, deliberate error contracts (RFC-7807), and live session change readiness.
+Select **Software Development** as our primary Part 2 evaluation area (60% weight), optimizing for robust architecture, test coverage (215 automated tests, ArchUnit, E2E), clean strategy substitution, deliberate error contracts (RFC-7807), and live session change readiness.
 
 ### Why We Chose It
 The operational reality of utility field operations requires dependable, maintainable, resilient services. A complex machine learning model that crashes on malformed inputs or requires hours to retrain provides zero operational value. Software Development allows us to deliver:
@@ -297,7 +298,7 @@ Selecting Data Science or Business Analytics as the 60% area.
 Data Science without solid engineering produces brittle prototypes that fail on unseen data or struggle under live change requests. By anchoring in Software Development, we demonstrate both strong analytical methodology (empirical backtesting, feature selection) and professional-grade engineering execution.
 
 ### Evidence / Test Supporting the Choice
-- 213 automated tests passing with 0 failures, 0 errors (193 test definitions across 28 test classes, including 5 ArchUnit rules and repeated determinism runs).
+- 215 automated tests passing with 0 failures, 0 errors (195 test definitions across 29 test classes, including 5 ArchUnit rules and repeated determinism runs).
 - 5/5 ArchUnit architectural layer enforcement rules.
 - Complete RFC-7807 error contracts (400 `MALFORMED_WEEK`, 400 `INVALID_WEEK_DAY`, 404 `GATEWAY_NOT_FOUND`, 422 `UNSUPPORTED_WEEK`, 422 `FUTURE_WEEK`).
 - Clean strategy substitution between `RiskBasedRankingStrategy` and `BaselineRankingStrategy` with zero controller changes.

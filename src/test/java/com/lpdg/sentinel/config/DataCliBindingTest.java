@@ -60,4 +60,18 @@ class DataCliBindingTest {
         String[] normalized = SentinelApplication.normalizeArgs(input);
         assertThat(normalized).containsExactly("--data=/somewhere/else", "--server.port=8080");
     }
+
+    @Test
+    @DisplayName("SentinelApplication.normalizeArgs space-separated --data binds to SentinelProperties")
+    void testNormalizeArgsBindsToProperties() {
+        String[] rawArgs = {"--data", "/custom/space/separated/path"};
+        String[] normalized = SentinelApplication.normalizeArgs(rawArgs);
+        var app = new org.springframework.boot.SpringApplication(TestConfig.class);
+        app.setWebApplicationType(org.springframework.boot.WebApplicationType.NONE);
+        app.setBannerMode(org.springframework.boot.Banner.Mode.OFF);
+        try (var context = app.run(normalized)) {
+            SentinelProperties props = context.getBean(SentinelProperties.class);
+            assertThat(props.dataDir()).isEqualTo("/custom/space/separated/path");
+        }
+    }
 }
