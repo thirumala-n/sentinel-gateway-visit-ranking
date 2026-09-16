@@ -1549,6 +1549,194 @@
       gap: 4px;
     }
 
+    /* ── Evidence Clarity & Modal Hierarchy Enhancements (Step 2) ─── */
+    .reason-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 440px;
+    }
+
+    .reason-main-text {
+      color: var(--text-secondary);
+      font-size: 11.5px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .reason-chips-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .meter-chip {
+      background: var(--brand-accent-subtle);
+      border: 1px solid var(--brand-accent-border);
+      color: var(--brand-accent);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      white-space: nowrap;
+    }
+
+    .meter-chip.high-exposure {
+      background: var(--risk-high-bg);
+      border-color: var(--risk-high-border);
+      color: var(--risk-high-text);
+    }
+
+    .signal-mini-chip {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+
+    .modal-eyebrow {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      color: var(--brand-accent);
+      text-transform: uppercase;
+    }
+
+    .modal-overview-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 12px 14px;
+    }
+
+    .overview-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      align-items: center;
+    }
+
+    .meta-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .meta-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .meta-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .meta-value.mono {
+      font-family: var(--font-mono);
+      letter-spacing: 0.5px;
+    }
+
+    .meta-value.highlight {
+      color: var(--brand-accent);
+    }
+
+    .meta-value.meters-text {
+      color: var(--brand-accent);
+      font-family: var(--font-mono);
+    }
+
+    .decision-logic-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .logic-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .logic-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .logic-primary-text {
+      font-size: 12px;
+      color: var(--brand-accent);
+      font-family: var(--font-mono);
+      background: var(--brand-accent-subtle);
+      padding: 8px 11px;
+      border-radius: 4px;
+      border: 1px solid var(--brand-accent-border);
+      line-height: 1.45;
+    }
+
+    .logic-synthesis-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: var(--bg-subtle);
+      padding: 9px 12px;
+      border-radius: 4px;
+      border-left: 3px solid var(--brand-accent);
+      line-height: 1.5;
+    }
+
+    .confidence-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .confidence-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .confidence-desc {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+
+    .modal-footer {
+      padding: 12px 18px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-subtle);
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      gap: 10px;
+    }
+
     /* ── Spinners & Animation ─────────────────────────────────────── */
     .spinner {
       width: 12px;
@@ -1636,10 +1824,10 @@
           <span>●</span>
           THIS WEEK'S OPERATIONAL FIELD DECISION
         </div>
-        <div class="command-headline">
+        <div class="command-headline" id="heroCommandHeadline">
           <span id="heroVisitCount" class="command-count-pill">15</span> Gateways Selected for Physical Field Inspection
         </div>
-        <div class="command-subtext">
+        <div class="command-subtext" id="heroCommandSubtext">
           Field technician dispatch allocation for week starting <strong id="heroWeekLabel" style="color: var(--text-primary);">2026-03-09</strong>. Priority derived strictly from multi-horizon technical distress, sustained outage persistence, and downstream customer meter exposure.
         </div>
       </div>
@@ -1728,7 +1916,7 @@
           </button>
         </div>
         <button type="button" class="btn btn-primary" id="topGwInspectBtn" data-action="inspect" data-gwid="" style="padding: 5px 12px; font-size: 11.5px;">
-          INSPECT EVIDENCE
+          WHY SELECTED? · INSPECT EVIDENCE
         </button>
       </div>
 
@@ -1826,13 +2014,13 @@
           <thead>
             <tr>
               <th style="width: 44px;">Rank</th>
-              <th style="width: 140px;">Gateway ID</th>
-              <th style="width: 135px;">Composite Score</th>
-              <th style="width: 110px;">Risk Level</th>
-              <th style="width: 135px;">Category</th>
-              <th style="width: 120px;">Confidence</th>
-              <th>Primary Operational Evidence</th>
-              <th style="width: 145px; text-align: right;">Actions</th>
+              <th style="width: 135px;">Gateway ID</th>
+              <th style="width: 125px;">Composite Score</th>
+              <th style="width: 105px;">Risk Level</th>
+              <th style="width: 125px;">Category</th>
+              <th style="width: 110px;">Confidence</th>
+              <th>Why Selected? (Distress &amp; Customer Exposure)</th>
+              <th style="width: 175px; text-align: right;">Decision Actions</th>
             </tr>
           </thead>
           <tbody id="predictionsTableBody">
@@ -1917,39 +2105,78 @@
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title-group">
-          <span style="font-size: 11px; color: var(--text-muted); font-weight: 800; letter-spacing: 0.5px;">GATEWAY EVIDENCE</span>
+          <span class="modal-eyebrow">DECISION EVIDENCE</span>
           <span id="modalGatewayId" class="modal-title">—</span>
-          <span id="modalRankBadge" class="panel-badge">Rank #—</span>
-          <span id="modalRiskBadge" class="badge">RISK</span>
-          <span id="modalConfidenceBadge" class="badge">CONFIDENCE</span>
+          <span id="modalRankBadge" class="panel-badge highlight">Rank #— of 15</span>
         </div>
-        <button type="button" id="modalCloseBtn" class="btn-close" aria-label="Close dialog">&times;</button>
+        <button type="button" id="modalCloseBtn" class="btn-close" aria-label="Close dialog" title="Close (Esc)">&times;</button>
       </div>
 
       <div class="modal-body">
-        <!-- Executive Summary & Primary Reason -->
+        <!-- 1. WHY THIS GATEWAY? (Executive Overview Card) -->
         <div class="evidence-section">
-          <div class="evidence-section-title">Executive Operational Summary</div>
-          <div id="modalSummary" class="evidence-summary-box">—</div>
+          <div class="evidence-section-title">1. Why This Gateway? · Executive Overview</div>
+          <div class="modal-overview-card">
+            <div class="overview-meta-grid">
+              <div class="meta-cell">
+                <span class="meta-label">GATEWAY ID</span>
+                <span id="modalMetaGwId" class="meta-value mono">—</span>
+              </div>
+              <div class="meta-cell">
+                <span class="meta-label">VISIT RANK</span>
+                <span id="modalMetaRank" class="meta-value highlight">—</span>
+              </div>
+              <div class="meta-cell">
+                <span class="meta-label">COMPOSITE SCORE</span>
+                <span id="modalMetaScore" class="meta-value">—</span>
+              </div>
+              <div class="meta-cell">
+                <span class="meta-label">RISK LEVEL</span>
+                <span id="modalRiskBadge" class="badge">RISK</span>
+              </div>
+              <div class="meta-cell">
+                <span class="meta-label">DECISION CATEGORY</span>
+                <span id="modalCategoryBadge" class="badge category">CATEGORY</span>
+              </div>
+              <div class="meta-cell">
+                <span class="meta-label">CUSTOMER EXPOSURE</span>
+                <span id="modalMetaMeters" class="meta-value meters-text">—</span>
+              </div>
+            </div>
+          </div>
         </div>
 
+        <!-- 2. DECISION LOGIC · DETERMINISTIC ATTRIBUTION -->
         <div class="evidence-section">
-          <div class="evidence-section-title">Primary Operational Reason</div>
-          <div id="modalPrimaryReason" style="font-size: 12px; color: var(--brand-accent); font-family: var(--font-mono); background: var(--brand-accent-subtle); padding: 8px 11px; border-radius: 4px; border: 1px solid var(--brand-accent-border);">—</div>
+          <div class="evidence-section-title">2. Decision Logic · Deterministic Attribution</div>
+          <div class="decision-logic-box">
+            <div class="logic-block">
+              <div class="logic-label">Primary Operational Reason (predictions.csv record):</div>
+              <div id="modalPrimaryReason" class="logic-primary-text">—</div>
+            </div>
+            <div class="logic-block">
+              <div class="logic-label">Deterministic Operational Synthesis:</div>
+              <div id="modalDecisionSynthesis" class="logic-synthesis-text">—</div>
+            </div>
+            <div class="logic-block" id="modalSummaryWrapper">
+              <div class="logic-label">Executive Diagnostic Summary:</div>
+              <div id="modalSummary" class="evidence-summary-box">—</div>
+            </div>
+          </div>
         </div>
 
-        <!-- Structured Feature Contributions -->
+        <!-- 3. TECHNICAL EVIDENCE · OBSERVED TELEMETRY CONTRIBUTIONS -->
         <div class="evidence-section">
-          <div class="evidence-section-title">Feature Contributions &amp; Observable Distress Signals</div>
+          <div class="evidence-section-title">3. Technical Evidence · Observed Telemetry Contributions</div>
           <div style="overflow-x: auto;">
             <table class="contributions-table">
               <thead>
                 <tr>
-                  <th style="width: 55px;">Code</th>
+                  <th style="width: 60px;">Pillar</th>
                   <th>Feature Name</th>
-                  <th style="width: 170px;">Measured Value</th>
+                  <th style="width: 175px;">Measured Telemetry</th>
                   <th style="width: 110px;">Severity</th>
-                  <th style="width: 80px;">Active</th>
+                  <th style="width: 85px;">Engine Status</th>
                 </tr>
               </thead>
               <tbody id="modalContributionsBody">
@@ -1959,17 +2186,37 @@
           </div>
         </div>
 
-        <!-- Operational Warnings -->
-        <div id="modalWarningsWrapper" class="evidence-section" style="display: none;">
-          <div class="evidence-section-title" style="color: var(--risk-critical-dot);">Operational Warnings</div>
-          <div id="modalWarnings" class="warning-box"></div>
-        </div>
+        <!-- 4. CONFIDENCE & DATA QUALITY CONSTRAINTS -->
+        <div class="evidence-section">
+          <div class="evidence-section-title">4. Confidence &amp; Data Quality Constraints</div>
+          <div id="modalConfidenceCard" class="confidence-card">
+            <div class="confidence-header">
+              <span id="modalConfidenceBadge" class="badge">CONFIDENCE</span>
+              <span id="modalConfidenceTitle" style="font-weight: 700; font-size: 12px; color: var(--text-primary);">—</span>
+            </div>
+            <div id="modalConfidenceDesc" class="confidence-desc">—</div>
+          </div>
 
-        <!-- Limitations & Uncertainties -->
-        <div id="modalLimitationsWrapper" class="evidence-section" style="display: none;">
-          <div class="evidence-section-title">Decision Limitations &amp; Cold Start Context</div>
-          <div id="modalLimitations" class="limitation-box"></div>
+          <!-- Operational Warnings -->
+          <div id="modalWarningsWrapper" style="display: none; margin-top: 6px;">
+            <div id="modalWarnings" class="warning-box"></div>
+          </div>
+
+          <!-- Limitations & Uncertainties -->
+          <div id="modalLimitationsWrapper" style="display: none; margin-top: 6px;">
+            <div id="modalLimitations" class="limitation-box"></div>
+          </div>
         </div>
+      </div>
+
+      <!-- Modal Action Footer -->
+      <div class="modal-footer">
+        <button type="button" id="modalCompareActionBtn" class="btn btn-secondary" title="Compare this gateway against another site">
+          <span>Compare This Gateway ↔</span>
+        </button>
+        <button type="button" id="modalDismissBtn" class="btn btn-primary">
+          <span>Close Evidence</span>
+        </button>
       </div>
     </div>
   </div>
@@ -2032,6 +2279,8 @@
         methodologyDisclosure: document.getElementById('methodologyDisclosure'),
         
         // Hero / Command Bar elements
+        heroCommandHeadline: document.getElementById('heroCommandHeadline'),
+        heroCommandSubtext: document.getElementById('heroCommandSubtext'),
         heroVisitCount: document.getElementById('heroVisitCount'),
         heroWeekLabel: document.getElementById('heroWeekLabel'),
         heroCapacity: document.getElementById('heroCapacity'),
@@ -2071,12 +2320,22 @@
         // Modal
         evidenceModal: document.getElementById('evidenceModal'),
         modalCloseBtn: document.getElementById('modalCloseBtn'),
+        modalDismissBtn: document.getElementById('modalDismissBtn'),
+        modalCompareActionBtn: document.getElementById('modalCompareActionBtn'),
         modalGatewayId: document.getElementById('modalGatewayId'),
         modalRankBadge: document.getElementById('modalRankBadge'),
         modalRiskBadge: document.getElementById('modalRiskBadge'),
+        modalCategoryBadge: document.getElementById('modalCategoryBadge'),
         modalConfidenceBadge: document.getElementById('modalConfidenceBadge'),
+        modalConfidenceTitle: document.getElementById('modalConfidenceTitle'),
+        modalConfidenceDesc: document.getElementById('modalConfidenceDesc'),
+        modalMetaGwId: document.getElementById('modalMetaGwId'),
+        modalMetaRank: document.getElementById('modalMetaRank'),
+        modalMetaScore: document.getElementById('modalMetaScore'),
+        modalMetaMeters: document.getElementById('modalMetaMeters'),
         modalSummary: document.getElementById('modalSummary'),
         modalPrimaryReason: document.getElementById('modalPrimaryReason'),
+        modalDecisionSynthesis: document.getElementById('modalDecisionSynthesis'),
         modalContributionsBody: document.getElementById('modalContributionsBody'),
         modalWarningsWrapper: document.getElementById('modalWarningsWrapper'),
         modalWarnings: document.getElementById('modalWarnings'),
@@ -2148,6 +2407,17 @@
           }
         });
 
+        dom.weekInput.addEventListener('input', () => {
+          const val = dom.weekInput.value.trim();
+          dom.quickBtns.forEach(btn => {
+            if (btn.dataset.week === val) {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          });
+        });
+
         dom.quickBtns.forEach(btn => {
           btn.addEventListener('click', () => {
             dom.quickBtns.forEach(b => b.classList.remove('active'));
@@ -2164,6 +2434,17 @@
         dom.compareBtn.addEventListener('click', performComparison);
         dom.alertCloseBtn.addEventListener('click', dismissAlert);
         dom.modalCloseBtn.addEventListener('click', closeModal);
+        if (dom.modalDismissBtn) {
+          dom.modalDismissBtn.addEventListener('click', closeModal);
+        }
+        if (dom.modalCompareActionBtn) {
+          dom.modalCompareActionBtn.addEventListener('click', () => {
+            const gwId = dom.modalGatewayId.textContent.trim();
+            closeModal();
+            selectCompareGateway(gwId);
+          });
+        }
+
         dom.evidenceModal.addEventListener('click', (e) => {
           if (e.target === dom.evidenceModal) closeModal();
         });
@@ -2238,21 +2519,81 @@
           const res = await fetch(`/api/v1/predictions/${encodeURIComponent(week)}`);
           if (!res.ok) {
             const err = await parseErrorResponse(res);
-            showAlert(err.message || `Failed to load predictions for week ${week}.`, 'error');
-            renderEmptyTable(err.message);
+            const errMsg = err.message || `Failed to load predictions for week ${week}.`;
+            showAlert(errMsg, 'error');
+            clearDecisionState(week, errMsg);
             return;
           }
 
           const data = await res.json();
           state.predictionsData = data;
+          state.currentWeek = data.week_start || week;
           renderPredictions(data);
           syncComparisonSelects(data.predictions);
         } catch (e) {
-          showAlert('Network error: Unable to reach Sentinel backend at ' + window.location.origin, 'error');
-          renderEmptyTable('Backend unreachable.');
+          const errMsg = 'Network error: Unable to reach Sentinel backend at ' + window.location.origin;
+          showAlert(errMsg, 'error');
+          clearDecisionState(week, errMsg);
         } finally {
           setLoading(false);
         }
+      }
+
+      function clearDecisionState(requestedWeek, errorMessage) {
+        state.predictionsData = null;
+        state.selectedGatewayId = null;
+
+        // Clear active quick button if any
+        dom.quickBtns.forEach(btn => btn.classList.remove('active'));
+
+        // Reset Command Hero Card
+        if (dom.heroCommandHeadline) {
+          dom.heroCommandHeadline.innerHTML = '<span id="heroVisitCount" class="command-count-pill" style="background: var(--bg-subtle); color: var(--text-muted); border-color: var(--border-light);">0</span> No Decisions Loaded';
+          dom.heroVisitCount = document.getElementById('heroVisitCount');
+        } else if (dom.heroVisitCount) {
+          dom.heroVisitCount.textContent = '0';
+        }
+
+        if (dom.heroCommandSubtext) {
+          dom.heroCommandSubtext.innerHTML = `No field visits allocated for week <strong id="heroWeekLabel" style="color: var(--text-primary);">${escapeHtml(requestedWeek || '—')}</strong>. ${escapeHtml(errorMessage || 'Enter a supported Monday prediction week to generate visit rankings.')}`;
+          dom.heroWeekLabel = document.getElementById('heroWeekLabel');
+        } else if (dom.heroWeekLabel) {
+          dom.heroWeekLabel.textContent = requestedWeek || '—';
+        }
+
+        if (dom.heroCapacity) dom.heroCapacity.textContent = '0 / 15 VISITS';
+
+        // Summary pills
+        if (dom.strategyPill) dom.strategyPill.textContent = 'STRATEGY: —';
+        if (dom.timestampPill) dom.timestampPill.textContent = 'Generated: —';
+        if (dom.tableCapacityBadge) dom.tableCapacityBadge.textContent = '0 Candidates';
+
+        // Executive KPI Metrics
+        if (dom.metricSelected) dom.metricSelected.textContent = '0';
+        if (dom.metricCritical) dom.metricCritical.textContent = '—';
+        if (dom.metricHighModerate) dom.metricHighModerate.textContent = '—';
+        if (dom.metricMeters) dom.metricMeters.textContent = '—';
+        if (dom.metricTopScore) dom.metricTopScore.textContent = '—';
+        if (dom.metricWeekLabel) dom.metricWeekLabel.textContent = requestedWeek ? escapeHtml(requestedWeek) : '—';
+
+        // Reset Priority #1 Decision Card
+        renderTopDecisionCard(null, requestedWeek);
+
+        // Reset Comparison Section
+        if (dom.compareSelectA && dom.compareSelectB) {
+          dom.compareSelectA.innerHTML = '<option value="">No candidates available</option>';
+          dom.compareSelectB.innerHTML = '<option value="">No candidates available</option>';
+        }
+        if (dom.comparisonContainer) {
+          dom.comparisonContainer.innerHTML = `
+            <div class="comparison-card" style="text-align: center; padding: 24px; color: var(--text-muted);">
+              <div>Select a valid prediction week with loaded candidates to perform pairwise contrast analysis.</div>
+            </div>
+          `;
+        }
+
+        // Render Empty Table with explicit state
+        renderEmptyTable(errorMessage);
       }
 
       // 3. Rerun Predictions (Cache Invalidation & Recalculation)
@@ -2332,11 +2673,42 @@
         }
       }
 
+      function selectCompareGateway(gwId) {
+        if (!gwId) return;
+        if (dom.compareSelectA && dom.compareSelectB) {
+          if (dom.compareSelectA.value !== gwId) {
+            dom.compareSelectA.value = gwId;
+            if (dom.compareSelectB.value === gwId) {
+              const otherOpt = Array.from(dom.compareSelectB.options).find(o => o.value !== gwId);
+              if (otherOpt) dom.compareSelectB.value = otherOpt.value;
+            }
+          } else {
+            const otherOpt = Array.from(dom.compareSelectB.options).find(o => o.value !== gwId);
+            if (otherOpt) dom.compareSelectB.value = otherOpt.value;
+          }
+          performComparison();
+          const compElem = document.getElementById('comparisonContainer');
+          if (compElem) {
+            compElem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+      }
+
       // ── Rendering Functions ───────────────────────────────────────
 
       function renderPredictions(data) {
         const predictions = data.predictions || [];
         const week = data.week_start || state.currentWeek;
+
+        // Synchronize week input and quick buttons for any arbitrary supported week (e.g. unseen months)
+        if (dom.weekInput) dom.weekInput.value = week;
+        dom.quickBtns.forEach(btn => {
+          if (btn.dataset.week === week) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
 
         // Update Header & Summary Pills
         dom.strategyPill.textContent = `STRATEGY: ${data.ranking_method || 'RISK_BASED'}`;
@@ -2347,8 +2719,20 @@
         dom.tableCapacityBadge.textContent = `${data.total_selected || predictions.length} of ${data.capacity || 15} Selected`;
 
         // Update Hero Field Decision Elements
-        dom.heroVisitCount.textContent = data.total_selected || predictions.length;
-        dom.heroWeekLabel.textContent = week;
+        if (dom.heroCommandHeadline) {
+          dom.heroCommandHeadline.innerHTML = `<span id="heroVisitCount" class="command-count-pill">${data.total_selected || predictions.length}</span> Gateways Selected for Physical Field Inspection`;
+          dom.heroVisitCount = document.getElementById('heroVisitCount');
+        } else if (dom.heroVisitCount) {
+          dom.heroVisitCount.textContent = data.total_selected || predictions.length;
+        }
+
+        if (dom.heroCommandSubtext) {
+          dom.heroCommandSubtext.innerHTML = `Field technician dispatch allocation for week starting <strong id="heroWeekLabel" style="color: var(--text-primary);">${escapeHtml(week)}</strong>. Priority derived strictly from multi-horizon technical distress, sustained outage persistence, and downstream customer meter exposure.`;
+          dom.heroWeekLabel = document.getElementById('heroWeekLabel');
+        } else if (dom.heroWeekLabel) {
+          dom.heroWeekLabel.textContent = week;
+        }
+
         dom.heroCapacity.textContent = `${data.total_selected || predictions.length} / ${data.capacity || 15} VISITS`;
         dom.heroStrategy.textContent = data.ranking_method || 'RISK_BASED';
 
@@ -2386,7 +2770,7 @@
 
         // Render Table Rows
         if (predictions.length === 0) {
-          renderEmptyTable('No gateway visit recommendations returned for this week.');
+          clearDecisionState(week, 'No gateway visit recommendations returned for this week.');
           return;
         }
 
@@ -2402,6 +2786,25 @@
 
           // Calculate normalized percentage for score bar (score relative to ~100 scale)
           const barWidth = Math.min(100, Math.max(5, Math.round((p.score / 100) * 100)));
+
+          // Extract meter impact and technical failure signal
+          let meterCount = null;
+          let techSignal = null;
+          if (p.reason) {
+            const m = p.reason.match(/(\d+)\s+meters/i);
+            if (m) meterCount = parseInt(m[1], 10);
+
+            const parts = p.reason.split(/[;.]/);
+            for (const part of parts) {
+              const trimmed = part.trim();
+              if (trimmed && !/meters/i.test(trimmed)) {
+                techSignal = trimmed;
+                break;
+              }
+            }
+          }
+
+          const meterClass = meterCount && meterCount > 200 ? 'meter-chip high-exposure' : 'meter-chip';
 
           tr.innerHTML = `
             <td>
@@ -2428,12 +2831,18 @@
               <span class="badge ${confBadgeClass}">${escapeHtml(p.confidence || 'FULL')}</span>
             </td>
             <td>
-              <div class="reason-text" title="${escapeHtml(p.reason || '')}">${escapeHtml(p.reason || '—')}</div>
+              <div class="reason-container">
+                <div class="reason-main-text" title="${escapeHtml(p.reason || '')}">${escapeHtml(p.reason || '—')}</div>
+                <div class="reason-chips-row">
+                  ${meterCount ? `<span class="${meterClass}" title="Downstream Customer Blast Radius">👥 ${meterCount.toLocaleString()} meters</span>` : ''}
+                  ${techSignal ? `<span class="signal-mini-chip" title="Observed Telemetry Distress">⚡ ${escapeHtml(techSignal)}</span>` : ''}
+                </div>
+              </div>
             </td>
             <td style="text-align: right;">
               <div class="action-group">
-                <button type="button" class="btn-tbl primary" data-action="inspect" data-gwid="${escapeHtml(p.gateway_id)}">Inspect</button>
-                <button type="button" class="btn-tbl" data-action="compare" data-gwid="${escapeHtml(p.gateway_id)}">Compare</button>
+                <button type="button" class="btn-tbl primary" data-action="inspect" data-gwid="${escapeHtml(p.gateway_id)}" title="Why was gateway ${escapeHtml(p.gateway_id)} selected?">Why Selected?</button>
+                <button type="button" class="btn-tbl" data-action="compare" data-gwid="${escapeHtml(p.gateway_id)}" title="Compare gateway ${escapeHtml(p.gateway_id)} against another candidate">Compare</button>
               </div>
             </td>
           `;
@@ -2444,10 +2853,21 @@
 
       function renderTopDecisionCard(gw1, week) {
         if (!gw1) {
-          dom.topGwId.textContent = 'No Prediction Available';
+          dom.topGwRank.textContent = '—';
+          dom.topGwId.textContent = 'No Decision Available';
           dom.topGwScore.textContent = '—';
-          dom.topGwSignals.innerHTML = '<span class="signal-chip">No telemetry signals</span>';
+          dom.topGwWeekTag.textContent = week ? `Week ${week}` : 'No Decision Loaded';
+          dom.topGwRisk.className = 'badge';
+          dom.topGwRisk.innerHTML = '<span class="badge-dot" style="background: var(--text-muted);"></span>NONE';
+          dom.topGwCategory.className = 'badge category';
+          dom.topGwCategory.textContent = 'NONE';
+          dom.topGwConfidence.className = 'badge';
+          dom.topGwConfidence.textContent = '—';
+          dom.topGwSignals.innerHTML = '<span class="signal-chip">No telemetry signals loaded</span>';
           dom.topGwInspectBtn.style.display = 'none';
+          if (dom.topGwSummarySnippet) {
+            dom.topGwSummarySnippet.textContent = 'No active decision model evaluation for requested week.';
+          }
           return;
         }
 
@@ -2605,21 +3025,71 @@
       }
 
       function openModal(explanation) {
+        // Modal Header
         dom.modalGatewayId.textContent = explanation.gateway_id || '—';
-        dom.modalRankBadge.textContent = `Rank #${explanation.rank} · Score ${explanation.score ? explanation.score.toFixed(2) : '—'}`;
-        
-        // Badges
-        dom.modalRiskBadge.className = `badge ${getRiskBadgeClass(explanation.risk_level)}`;
-        dom.modalRiskBadge.innerHTML = `<span class="badge-dot"></span>${escapeHtml(explanation.risk_level || 'UNKNOWN')}`;
+        dom.modalRankBadge.textContent = `Rank #${explanation.rank} · Score ${explanation.score != null ? Number(explanation.score).toFixed(2) : '—'}`;
 
-        dom.modalConfidenceBadge.className = `badge ${getConfidenceBadgeClass(explanation.confidence)}`;
-        dom.modalConfidenceBadge.textContent = explanation.confidence || 'FULL';
+        // Tier 1: Executive Overview Grid
+        if (dom.modalMetaGwId) dom.modalMetaGwId.textContent = explanation.gateway_id || '—';
+        if (dom.modalMetaRank) dom.modalMetaRank.textContent = `#${explanation.rank}`;
+        if (dom.modalMetaScore) dom.modalMetaScore.textContent = explanation.score != null ? Number(explanation.score).toFixed(2) : '—';
 
-        // Reason & Summary
+        if (dom.modalRiskBadge) {
+          dom.modalRiskBadge.className = `badge ${getRiskBadgeClass(explanation.risk_level)}`;
+          dom.modalRiskBadge.innerHTML = `<span class="badge-dot"></span>${escapeHtml(explanation.risk_level || 'UNKNOWN')}`;
+        }
+
+        if (dom.modalCategoryBadge) {
+          dom.modalCategoryBadge.className = `badge category ${getCategoryBadgeClass(explanation.decision_category)}`;
+          dom.modalCategoryBadge.textContent = explanation.decision_category || 'NOMINAL';
+        }
+
+        // Customer exposure: extract from F05 or primary_reason
+        const f05 = (explanation.feature_contributions || []).find(f => f.feature_code === 'F05');
+        let customerExposureStr = f05 && f05.value ? f05.value : null;
+        if (!customerExposureStr && explanation.primary_reason) {
+          const matchMeters = explanation.primary_reason.match(/(\d+)\s+meters?/i);
+          if (matchMeters) customerExposureStr = `${matchMeters[1]} meters`;
+        }
+        if (dom.modalMetaMeters) {
+          dom.modalMetaMeters.textContent = customerExposureStr || 'Standard Fleet Baseline';
+        }
+
+        // Tier 2: Decision Logic & Synthesis
         dom.modalPrimaryReason.textContent = explanation.primary_reason || '—';
         dom.modalSummary.textContent = explanation.summary || '—';
 
-        // Contributions Table with Visual Elements
+        if (dom.modalDecisionSynthesis) {
+          // Deterministic synthesis constructed strictly from response data and observed signals
+          const cat = explanation.decision_category || '';
+          const activeFeatures = (explanation.feature_contributions || []).filter(f => f.active);
+          const activeCodes = activeFeatures.map(f => `${f.feature_code} (${f.feature_name}: ${f.value})`).join(', ');
+
+          let distressContext = 'elevated telemetry anomalies';
+          if (cat.includes('OUTAGE')) {
+            distressContext = 'sustained offline anomalies and persistence';
+          } else if (cat.includes('REBOOT')) {
+            distressContext = 'abnormal reboot frequency distress';
+          } else if (cat.includes('ELEVATED') || cat.includes('RISK')) {
+            distressContext = 'heightened composite outage risk';
+          }
+
+          let plainSynthesis = `Observed telemetry indicates technical distress (${distressContext}) `;
+          if (customerExposureStr) {
+            plainSynthesis += `combined with downstream customer exposure (${customerExposureStr}), `;
+          } else {
+            plainSynthesis += `across fleet operations, `;
+          }
+          plainSynthesis += `resulting in deterministic priority visit ranking over nominal units.`;
+
+          if (activeCodes) {
+            plainSynthesis += ` Key contributing signals: ${activeCodes}.`;
+          }
+
+          dom.modalDecisionSynthesis.textContent = plainSynthesis;
+        }
+
+        // Tier 3: Technical Evidence Contributions Table
         dom.modalContributionsBody.innerHTML = '';
         (explanation.feature_contributions || []).forEach(fc => {
           const tr = document.createElement('tr');
@@ -2633,21 +3103,26 @@
             const valNum = parseFloat(numMatch[1]);
             if (fc.feature_code === 'F01' || fc.feature_code === 'F02' || fc.feature_code === 'F03') {
               const pct = Math.min(100, Math.round((valNum / 168) * 100));
-              visualBarHtml = `<div class="feat-bar-track" title="${pct}% of week"><div class="feat-bar-fill" style="width: ${pct}%; background: ${sevColor};"></div></div>`;
+              visualBarHtml = `<div class="feat-bar-track" title="${pct}% of week (${valNum}h / 168h)"><div class="feat-bar-fill" style="width: ${pct}%; background: ${sevColor};"></div></div>`;
             } else if (fc.feature_code === 'F04') {
-              const arrow = valNum > 1.2 ? '↗ (Accelerating)' : valNum < 0.8 ? '↘ (Recovering)' : '→ (Stable)';
+              const arrow = valNum > 1.2 ? '↗ (Accelerating Distress)' : valNum < 0.8 ? '↘ (Recovering Trajectory)' : '→ (Stable)';
               visualBarHtml = ` <span style="font-size: 11px; color: ${sevColor}; font-weight: 700;">${arrow}</span>`;
+            } else if (fc.feature_code === 'F05') {
+              const pct = Math.min(100, Math.round((valNum / 250) * 100));
+              visualBarHtml = `<div class="feat-bar-track" title="${valNum} connected meters"><div class="feat-bar-fill" style="width: ${pct}%; background: var(--brand-accent);"></div></div>`;
             }
           }
 
           tr.innerHTML = `
             <td style="font-family: var(--font-mono); font-weight: 700; color: var(--brand-accent);">${escapeHtml(fc.feature_code)}</td>
-            <td style="font-weight: 600; color: var(--text-primary);">${escapeHtml(fc.feature_name)}</td>
+            <td style="font-weight: 600; color: var(--text-primary);">
+              <div>${escapeHtml(fc.feature_name)}</div>
+            </td>
             <td style="font-family: var(--font-mono); color: var(--text-primary);">
               <span>${escapeHtml(fc.value || '—')}</span>
               ${visualBarHtml}
             </td>
-            <td style="font-weight: 700; color: ${sevColor};">${escapeHtml(fc.severity || 'NOMINAL')}</td>
+            <td style="font-weight: 700; color: ${sevColor}; font-size: 11.5px;">${escapeHtml(fc.severity || 'NOMINAL')}</td>
             <td>
               ${fc.active 
                 ? '<span class="badge" style="background: var(--brand-accent-subtle); color: var(--brand-accent); border: 1px solid var(--brand-accent-border);">ACTIVE</span>' 
@@ -2656,6 +3131,28 @@
           `;
           dom.modalContributionsBody.appendChild(tr);
         });
+
+        // Tier 4: Confidence & Data Quality
+        if (dom.modalConfidenceBadge) {
+          dom.modalConfidenceBadge.className = `badge ${getConfidenceBadgeClass(explanation.confidence)}`;
+          dom.modalConfidenceBadge.textContent = explanation.confidence || 'FULL';
+        }
+
+        let confTitle = 'Full Historical Baseline Memory';
+        let confDesc = 'Telemetry baseline spans >= 30 days with verified meter associations. Statistical anomaly scoring operating with unconstrained confidence.';
+        if (explanation.confidence === 'LOW_HISTORY') {
+          confTitle = 'Constrained Baseline History (< 30 Days)';
+          confDesc = 'Observation window is restricted; statistical threshold uses shrinkage stabilization against fleet baseline.';
+        } else if (explanation.confidence === 'MISSING_TELEMETRY' || explanation.confidence === 'DEGRADED') {
+          confTitle = 'Partial Telemetry Telemetry Observed';
+          confDesc = 'Observation intervals contain gaps; deterministic outage duration and reboot volume prioritized over standard distribution.';
+        } else if (explanation.fallback) {
+          confTitle = 'Fallback Deterministic Ranking Applied';
+          confDesc = 'Historical baseline data unavailable; ranking produced via deterministic offline duration and reboot frequency.';
+        }
+
+        if (dom.modalConfidenceTitle) dom.modalConfidenceTitle.textContent = confTitle;
+        if (dom.modalConfidenceDesc) dom.modalConfidenceDesc.textContent = confDesc;
 
         // Warnings
         if (explanation.warnings && explanation.warnings.length > 0) {
@@ -2744,8 +3241,9 @@
           <tr>
             <td colspan="8">
               <div class="empty-state">
-                <div>⚠️</div>
-                <div>${escapeHtml(message || 'No decision data available.')}</div>
+                <div style="font-size: 26px; margin-bottom: 6px;">⚠️</div>
+                <div style="font-size: 13.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">NO DECISION LOADED</div>
+                <div style="font-size: 12px; color: var(--text-muted); max-width: 520px; margin: 0 auto; line-height: 1.4;">${escapeHtml(message || 'No decision data available for the requested week.')}</div>
               </div>
             </td>
           </tr>
